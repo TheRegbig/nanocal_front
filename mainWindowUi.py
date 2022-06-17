@@ -1,4 +1,3 @@
-from re import L
 from silx.gui import qt
 from silx.gui.plot import Plot1D
 
@@ -203,7 +202,7 @@ class mainWindowUi(qt.QWidget):
         self.saveConfigButton.setFixedWidth = long_button_width
         lout_1.addWidget(self.saveConfigButton)
         lout_1.addStretch()
-        
+
         lout_0.addStretch()
 
         leftLayout.addStretch()
