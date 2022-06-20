@@ -27,7 +27,7 @@ class mainWindowUi(qt.QWidget):
         ####### System Group Box
         ########################################
         systemBox = qt.QGroupBox("System")
-        systemBox.setMinimumWidth(lcp_width)
+        systemBox.setFixedWidth(lcp_width)
         leftLayout.addWidget(systemBox)
         lout_0 = qt.QVBoxLayout()
         systemBox.setLayout(lout_0)
@@ -49,7 +49,6 @@ class mainWindowUi(qt.QWidget):
         lout_1.addStretch()
         lout_2 = qt.QVBoxLayout()
         lout_1.addLayout(lout_2)
-        lout_2.addStretch(2)
         self.sys_setup_button = qt.QPushButton("Setup")
         self.sys_setup_button.setMinimumWidth(short_button_width)
         self.sys_setup_button.setMinimumHeight(button_height)
@@ -58,11 +57,8 @@ class mainWindowUi(qt.QWidget):
         self.sys_help_button.setMinimumWidth(short_button_width)
         self.sys_help_button.setMinimumHeight(button_height)
         lout_2.addWidget(self.sys_help_button,0)
-        lout_2.addStretch(2)
         lout_2.setSpacing(1)
         lout_1.setSpacing(1)
-
-        lout_0.addStretch()
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
@@ -78,12 +74,11 @@ class mainWindowUi(qt.QWidget):
         self.sys_data_path_button = qt.QToolButton(text="...")
         lout_2.addWidget(self.sys_data_path_button)
 
-        lout_0.addStretch()
         
         ####### Experiment Group Box
         ########################################
         experimentBox = qt.QGroupBox("Experiment")
-        experimentBox.setMinimumWidth(lcp_width)
+        experimentBox.setFixedWidth(lcp_width)
         experimentBox.setMinimumHeight(400)
         leftLayout.addWidget(experimentBox)
         lout_0 = qt.QVBoxLayout()
@@ -227,10 +222,10 @@ class mainWindowUi(qt.QWidget):
         lout_1.setSpacing(1)
         lout_1.addStretch()
         self.loadConfigButton = qt.QPushButton("Load config")
-        self.loadConfigButton.setFixedWidth = long_button_width
+        self.loadConfigButton.setMinimumWidth = long_button_width
         lout_1.addWidget(self.loadConfigButton)
         self.saveConfigButton = qt.QPushButton("Save config")
-        self.saveConfigButton.setFixedWidth = long_button_width
+        self.saveConfigButton.setMinimumWidth = long_button_width
         lout_1.addWidget(self.saveConfigButton)
         lout_1.addStretch()
 
