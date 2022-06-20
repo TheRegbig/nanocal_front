@@ -28,7 +28,7 @@ class mainWindowUi(qt.QWidget):
         ########################################
         systemBox = qt.QGroupBox("System")
         systemBox.setFixedWidth(lcp_width)
-        leftLayout.addWidget(systemBox)
+        leftLayout.addWidget(systemBox, 0)
         lout_0 = qt.QVBoxLayout()
         systemBox.setLayout(lout_0)
 
@@ -78,7 +78,7 @@ class mainWindowUi(qt.QWidget):
         experimentBox = qt.QGroupBox("Experiment")
         experimentBox.setFixedWidth(lcp_width)
         experimentBox.setMinimumHeight(400)
-        leftLayout.addWidget(experimentBox)
+        leftLayout.addWidget(experimentBox, 0)
         lout_0 = qt.QVBoxLayout()
         experimentBox.setLayout(lout_0)
 
@@ -229,7 +229,7 @@ class mainWindowUi(qt.QWidget):
 
         lout_0.addStretch()
 
-        leftLayout.addStretch()
+        leftLayout.addStretch(1)
 
         lout_0 = qt.QVBoxLayout()
         leftLayout.addLayout(lout_0)
