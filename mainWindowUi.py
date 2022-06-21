@@ -1,5 +1,6 @@
 from silx.gui import qt
 from silx.gui.plot import Plot1D
+from silx.gui import icons
 
 class mainWindowUi(qt.QWidget):
     def __init__(self, parent=None):
@@ -34,7 +35,6 @@ class mainWindowUi(qt.QWidget):
         lout_1 = qt.QHBoxLayout()
         lout_0.addLayout(lout_1)
         self.sys_on_button = qt.QPushButton("ON")
-        self.sys_on_button.setMinimumHeight(60)
         #self.sys_on_button.setSizePolicy(qt.QSizePolicy.Expanding, qt.QSizePolicy.Expanding)
         font.setBold(True)
         self.sys_on_button.setFont(font)
@@ -44,19 +44,36 @@ class mainWindowUi(qt.QWidget):
         font.setBold(True)
         self.sys_off_button.setFont(font)
         lout_1.addWidget(self.sys_off_button, 1)
-        lout_1.addStretch()
-        lout_2 = qt.QVBoxLayout()
-        lout_1.addLayout(lout_2)
-        self.sys_setup_button = qt.QPushButton("Setup")
-        #self.sys_setup_button.setMinimumWidth(short_button_width)
-        #self.sys_setup_button.setMinimumHeight(button_height)
-        lout_2.addWidget(self.sys_setup_button)
-        self.sys_help_button = qt.QPushButton("Help")
-        #self.sys_help_button.setMinimumWidth(short_button_width)
-        #self.sys_help_button.setMinimumHeight(button_height)
+        # lout_1.addStretch()
+        # lout_2 = qt.QVBoxLayout()
+        # lout_1.addLayout(lout_2)
+        # self.sys_setup_button = qt.QPushButton("Setup")
+        # #self.sys_setup_button.setMinimumWidth(short_button_width)
+        # #self.sys_setup_button.setMinimumHeight(button_height)
+        # lout_2.addWidget(self.sys_setup_button)
+        # self.sys_help_button = qt.QPushButton("Help")
+        # #self.sys_help_button.setMinimumWidth(short_button_width)
+        # #self.sys_help_button.setMinimumHeight(button_height)
+        # lout_2.addWidget(self.sys_help_button)
+        # lout_2.setSpacing(1)
+        # lout_1.setSpacing(1)
+
+        lout_2 = qt.QHBoxLayout()
+        lout_0.addLayout(lout_2)
+        lout_2.addStretch()
+        self.sys_help_button = qt.QToolButton()
+        self.sys_help_button.setToolTip("Help")
+        self.sys_help_button.setIcon(icons.getQIcon('zoom'))
+        self.sys_help_button.setIconSize(qt.QSize(20, 20))
         lout_2.addWidget(self.sys_help_button)
+        self.sys_setup_button = qt.QToolButton()
+        self.sys_setup_button.setToolTip("Device settings")
+        self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
+        self.sys_setup_button.setIconSize(qt.QSize(20, 20))
+        lout_2.addWidget(self.sys_setup_button)
         lout_2.setSpacing(1)
-        lout_1.setSpacing(1)
+
+
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
