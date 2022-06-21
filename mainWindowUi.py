@@ -11,8 +11,7 @@ class mainWindowUi(qt.QWidget):
         mainLayout = qt.QHBoxLayout()
         self.setLayout(mainLayout)
 
-        short_button_width = 50
-        short_label_width = 30
+        short_label_width = 25
         long_button_width = 100
         long_label_width = 60
         button_height = 20
@@ -67,38 +66,37 @@ class mainWindowUi(qt.QWidget):
         
         # ####### Experiment Group Box
         # ########################################
-        # experimentBox = qt.QGroupBox("Experiment")
-        # experimentBox.setMinimumWidth(lcp_width)
-        # experimentBox.setMinimumHeight(400)
-        # leftLayout.addWidget(experimentBox, 0)
-        # lout_0 = qt.QVBoxLayout()
-        # experimentBox.setLayout(lout_0)
+        experimentBox = qt.QGroupBox("Experiment")
+        leftLayout.addWidget(experimentBox, 0)
+        lout_0 = qt.QVBoxLayout()
+        experimentBox.setLayout(lout_0)
 
-        # lout_1 = qt.QVBoxLayout()
-        # lout_0.addLayout(lout_1)
+        lout_1 = qt.QVBoxLayout()
+        lout_0.addLayout(lout_1)
         # lout_1.setSpacing(3)
-        # lout_1.addWidget(qt.QLabel("Calibration"))
-        # lout_2 = qt.QHBoxLayout()
-        # lout_1.addLayout(lout_2)
-        # self.calib_path = qt.QLineEdit()
-        # self.calib_path.setFrame(False)
+        lout_1.addWidget(qt.QLabel("Calibration"))
+        lout_2 = qt.QHBoxLayout()
+        lout_1.addLayout(lout_2)
+        lout_2.setSpacing(0)
+        self.calib_path = qt.QLineEdit()
+        self.calib_path.setFrame(False)
         # self.calib_path.setMinimumHeight(line_input_height)
-        # lout_2.addWidget(self.calib_path)
-        # self.calib_path_button = qt.QToolButton(text="...")
-        # self.calib_path_button.setMinimumHeight(button_height)
-        # lout_2.addWidget(self.calib_path_button)
-        # lout_3 = qt.QHBoxLayout()
-        # lout_3.setSpacing(1)
-        # lout_1.addLayout(lout_3)
-        # lout_3.addStretch()
-        # self.calib_view_button = qt.QPushButton("View")
+        lout_2.addWidget(self.calib_path)
+        self.calib_path_button = qt.QToolButton()
+        self.calib_path_button.setToolTip("Browse calibration path")
+        self.calib_path_button.setIcon(icons.getQIcon('document-open'))
+        lout_2.addWidget(self.calib_path_button)
+        lout_3 = qt.QHBoxLayout()
+        lout_3.setSpacing(1)
+        lout_1.addLayout(lout_3)
+        lout_3.addStretch()
+        self.calib_view_button = qt.QPushButton("View")
         # self.calib_view_button.setMinimumWidth(short_button_width)
-        # self.calib_view_button.setMinimumHeight(button_height)
-        # lout_3.addWidget(self.calib_view_button)
-        # self.calib_apply_button = qt.QPushButton("Apply")
+        lout_3.addWidget(self.calib_view_button)
+        self.calib_apply_button = qt.QPushButton("Apply")
         # self.calib_apply_button.setMinimumWidth(short_button_width)
         # self.calib_apply_button.setMinimumHeight(button_height)
-        # lout_3.addWidget(self.calib_apply_button)
+        lout_3.addWidget(self.calib_apply_button)
 
         # lout_0.addStretch()
         # hline = qt.QFrame()
