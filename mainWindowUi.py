@@ -60,7 +60,7 @@ class mainWindowUi(qt.QWidget):
         lout_2.setSpacing(0)
         lout_1.addLayout(lout_2)
         self.sys_data_path = qt.QLineEdit()
-        # self.sys_data_path.setMinimumHeight(line_input_height)
+        self.sys_data_path.setMinimumWidth(150)
         self.sys_data_path.setFrame(False)
         lout_2.addWidget(self.sys_data_path)
         self.sys_data_path_button = qt.QToolButton()
