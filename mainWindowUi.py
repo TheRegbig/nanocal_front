@@ -34,7 +34,7 @@ class mainWindowUi(qt.QWidget):
 
         lout_1 = qt.QHBoxLayout()
         lout_0.addLayout(lout_1)
-        self.sys_on_button = qt.QPushButton("ON")
+        self.sys_on_button = qt.QPushButton(" ON ")
         self.sys_on_button.setSizePolicy(qt.QSizePolicy.Expanding, qt.QSizePolicy.Expanding)
         font.setBold(True)
         self.sys_on_button.setFont(font)
@@ -44,11 +44,9 @@ class mainWindowUi(qt.QWidget):
         font.setBold(True)
         self.sys_off_button.setFont(font)
         lout_1.addWidget(self.sys_off_button, 1)
-        self.sys_help_button = qt.QPushButton("?")
-        font.setBold(True)
-        self.sys_help_button.setFont(font)
+        self.sys_help_button = qt.QToolButton()
         self.sys_help_button.setToolTip("Help")
-        self.sys_help_button.setMaximumWidth(40)
+        self.sys_help_button.setIcon(icons.getQIcon('zoom'))
         lout_1.addWidget(self.sys_help_button, 0)
         lout_1.setSpacing(1)
 
