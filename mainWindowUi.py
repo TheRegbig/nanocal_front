@@ -44,6 +44,7 @@ class mainWindowUi(qt.QWidget):
         font.setBold(True)
         self.sys_off_button.setFont(font)
         lout_1.addWidget(self.sys_off_button, 1)
+        lout_1.addStretch()
         self.sys_help_button = qt.QPushButton()
         self.sys_help_button.setIcon(icons.getQIcon('zoom'))
         self.sys_help_button.setToolTip("Help")
