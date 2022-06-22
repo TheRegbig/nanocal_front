@@ -494,7 +494,7 @@ class mainWindowUi(qt.QWidget):
         lout_0 = qt.QHBoxLayout()
         rightLayout.addLayout(lout_0)
         lout_0.setSpacing(1)
-        self.sys_setup_button = qt.QPushButton()
+        self.sys_setup_button = qt.QToolButton()
         self.sys_setup_button.setToolTip("Device settings")
         self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
         lout_0.addWidget(self.sys_setup_button)
