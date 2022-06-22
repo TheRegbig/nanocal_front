@@ -292,7 +292,7 @@ class mainWindowUi(qt.QWidget):
         lout_3 = qt.QHBoxLayout()
         lout_3.setSpacing(1)
         lout_2.addLayout(lout_3)
-        self.loadTxtButton = qt.QPushButton("Load *txt")
+        self.loadTxtButton = qt.QPushButton("Load")
         lout_3.addWidget(self.loadTxtButton)
         self.armButton = qt.QPushButton("Arm")
         lout_3.addWidget(self.armButton)
