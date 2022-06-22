@@ -235,13 +235,42 @@ class mainWindowUi(qt.QWidget):
         self.mainTabWidget.addTab(self.resultTab, "Result")
         rightLayout.addWidget(self.mainTabWidget)
         
-        # # Control tab
+        # Control tab
         lout_0 = qt.QVBoxLayout()
         self.controlTab.setLayout(lout_0)
         lout_1 = qt.QHBoxLayout()
         lout_0.addLayout(lout_1, 1)
         
-        lout_1.addWidget(qt.QGroupBox("Prog"))
+        # Prog
+        progGroupBox = qt.QGroupBox("Prog")
+        lout_1.addWidget(progGroupBox, 0)
+        lout_2 = qt.QVBoxLayout()
+        progGroupBox.setLayout(lout_2)
+        self.experimentTable = qt.QTableWidget()
+        self.experimentTable.setFixedSize(150, 200)
+        self.experimentTable.setFrameStyle(qt.QFrame.NoFrame)
+        # self.experimentTable.setFrameStyle(qt.QFrame.StyledPanel)
+        self.experimentTable.setRowCount(100)
+        self.experimentTable.setColumnCount(2)
+        self.experimentTable.horizontalHeader().setVisible(False)
+        self.experimentTable.horizontalHeader().setDefaultSectionSize(75)
+        self.experimentTable.horizontalHeader().setHighlightSections(True)
+        self.experimentTable.horizontalHeader().setMinimumSectionSize(75)
+        self.experimentTable.verticalHeader().setVisible(False)
+        self.experimentTable.verticalHeader().setDefaultSectionSize(10)
+        self.experimentTable.verticalHeader().setMinimumSectionSize(10)
+        self.experimentTable.setVerticalScrollBarPolicy(qt.Qt.ScrollBarAlwaysOff)
+        self.experimentTable.setHorizontalScrollBarPolicy(qt.Qt.ScrollBarAlwaysOff)
+        self.experimentTable.setColumnWidth(0,75)
+        self.experimentTable.setColumnWidth(1,75)
+        self.experimentTable.setInputMethodHints(qt.Qt.ImhNone)
+        for row in range(100):
+            for col in range(2):
+                self.experimentTable.setItem(row, col, qt.QTableWidgetItem('0'))
+        lout_2.addWidget(self.experimentTable, 0)
+        lout_2.addStretch()
+
+        # Signal and program plots 
         self.controlTabsWidget = qt.QTabWidget()
         self.signalsTab = qt.QWidget()
         self.controlTabsWidget.addTab(self.signalsTab, "Signals")
@@ -255,6 +284,7 @@ class mainWindowUi(qt.QWidget):
         self.progTab.setLayout(lout_3)
         lout_3.addWidget(Plot1D())
 
+        # Values area
         valuesBox = qt.QGroupBox("Values")
         lout_0.addWidget(valuesBox, 0)
         lout_1 = qt.QHBoxLayout()
@@ -449,7 +479,7 @@ class mainWindowUi(qt.QWidget):
         lout_1.addStretch()
         lout_1.addStretch()
 
-        # # results tab
+        # results tab
         lout_0 = qt.QHBoxLayout()
         self.resultTab.setLayout(lout_0)
         # ########################################################
