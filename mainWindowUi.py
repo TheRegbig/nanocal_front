@@ -493,18 +493,23 @@ class mainWindowUi(qt.QWidget):
         ########################################        
         lout_0 = qt.QHBoxLayout()
         rightLayout.addLayout(lout_0)
+        lout_0.setSpacing(1)
         self.sys_setup_button = qt.QPushButton()
         self.sys_setup_button.setToolTip("Device settings")
         self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
         lout_0.addWidget(self.sys_setup_button)
         lout_0.addWidget(qt.QLabel("Hardware:"))
-        lout_0.addStretch()
+        self.hardware_label = qt.QLabel(' ---')
+        self.hardware_label.setFixedWidth(80)
+        lout_0.addWidget(self.hardware_label)
         lout_0.addWidget(qt.QLabel("Status:"))
+        self.status_label = qt.QLabel(' ---')
+        self.status_label.setFixedWidth(80)
+        lout_0.addWidget(self.status_label)
         lout_0.addStretch()
         lout_0.addWidget(qt.QLabel("Progress:"))
         self.progressBar = qt.QProgressBar()
-        self.progressBar.setFixedWidth(400)
-        lout_0.addWidget(self.progressBar)
+        lout_0.addWidget(self.progressBar,1)
         
 
 if __name__ == "__main__":
