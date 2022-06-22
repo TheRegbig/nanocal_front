@@ -11,7 +11,7 @@ class mainWindowUi(qt.QWidget):
         mainLayout = qt.QHBoxLayout()
         self.setLayout(mainLayout)
 
-        short_label_width = 40
+        short_label_width = 55
         short_button_width = 60
         long_label_width = 60
         button_height = 20
@@ -360,7 +360,7 @@ class mainWindowUi(qt.QWidget):
         labl.setAlignment(qt.Qt.AlignRight)
         lout_2_1.addWidget(labl)
         self.terrorValueLabel = qt.QLabel("00.0")
-        self.terrorValueLabel.setFixedWidth(25)
+        self.terrorValueLabel.setFixedWidth(30)
         self.terrorValueLabel.setAlignment(qt.Qt.AlignLeft)
         lout_2_1.addWidget(self.terrorValueLabel)
         lout_2_2 = qt.QVBoxLayout()
@@ -431,7 +431,7 @@ class mainWindowUi(qt.QWidget):
         labl.setAlignment(qt.Qt.AlignRight)
         lout_2_1.addWidget(labl)
         self.phaseValueLabel = qt.QLabel("00.0")
-        self.phaseValueLabel.setFixedWidth(25)
+        self.phaseValueLabel.setFixedWidth(30)
         self.phaseValueLabel.setAlignment(qt.Qt.AlignLeft)
         lout_2_1.addWidget(self.phaseValueLabel)
         lout_2_2 = qt.QVBoxLayout()
