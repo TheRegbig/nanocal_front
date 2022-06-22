@@ -71,8 +71,6 @@ class mainWindowUi(qt.QWidget):
         lout_0 = qt.QVBoxLayout()
         experimentBox.setLayout(lout_0)
 
-        lout_0.addSpacing(5)
-
         lout_1 = qt.QHBoxLayout()
         lout_0.addLayout(lout_1)
         lout_1.setSpacing(1)
@@ -83,14 +81,12 @@ class mainWindowUi(qt.QWidget):
         self.saveConfigButton.setSizePolicy(qt.QSizePolicy.Expanding, qt.QSizePolicy.Expanding)
         lout_1.addWidget(self.saveConfigButton)
 
-        lout_0.addSpacing(10)
         lout_0.addStretch()
         hline = qt.QFrame()
         hline.setFrameShape(qt.QFrame.HLine)
         hline.setStyleSheet("color: rgb(220, 220, 220);")
         lout_0.addWidget(hline)
         lout_0.addStretch()
-        lout_0.addSpacing(10)
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
@@ -115,14 +111,12 @@ class mainWindowUi(qt.QWidget):
         self.calib_apply_button = qt.QPushButton("Apply")
         lout_3.addWidget(self.calib_apply_button)
 
-        lout_0.addSpacing(10)
         lout_0.addStretch()
         hline = qt.QFrame()
         hline.setFrameShape(qt.QFrame.HLine)
         hline.setStyleSheet("color: rgb(220, 220, 220);")
         lout_0.addWidget(hline)
         lout_0.addStretch()
-        lout_0.addSpacing(10)
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
@@ -149,14 +143,12 @@ class mainWindowUi(qt.QWidget):
         self.applyScanSampleRateButton = qt.QPushButton("Apply")
         lout_3.addWidget(self.applyScanSampleRateButton)
 
-        lout_0.addSpacing(10)
         lout_0.addStretch()
         hline = qt.QFrame()
         hline.setFrameShape(qt.QFrame.HLine)
         hline.setStyleSheet("color: rgb(220, 220, 220);")
         lout_0.addWidget(hline)
         lout_0.addStretch()
-        lout_0.addSpacing(10)
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
