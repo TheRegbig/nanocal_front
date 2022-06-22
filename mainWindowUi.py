@@ -12,7 +12,7 @@ class mainWindowUi(qt.QWidget):
         self.setLayout(mainLayout)
 
         short_label_width = 40
-        short_button_width = 55
+        short_button_width = 60
         long_label_width = 60
         button_height = 20
         short_line_input_width = 60
