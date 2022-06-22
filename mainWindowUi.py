@@ -241,11 +241,25 @@ class mainWindowUi(qt.QWidget):
         lout_1 = qt.QHBoxLayout()
         lout_0.addLayout(lout_1, 1)
         
-        # Prog
+        # Prog group box
         progGroupBox = qt.QGroupBox("Prog")
         lout_1.addWidget(progGroupBox, 0)
         lout_2 = qt.QVBoxLayout()
+        lout_2.setSpacing(0)
         progGroupBox.setLayout(lout_2)
+        
+        lout_3 = qt.QHBoxLayout()
+        lout_2.addLayout(lout_3)
+        self.experimentTimeComboBox = qt.QComboBox()
+        self.experimentTimeComboBox.addItem("Time (ms)")
+        self.experimentTimeComboBox.addItem("Time (s)")
+        lout_3.addWidget(self.experimentTimeComboBox)
+        self.experimentTempComboBox = qt.QComboBox()
+        self.experimentTempComboBox.addItem("Temp (°C)")
+        self.experimentTempComboBox.addItem("Volt (V)")
+        lout_3.addWidget(self.experimentTempComboBox)
+
+
         self.experimentTable = qt.QTableWidget()
         self.experimentTable.setFixedSize(150, 200)
         self.experimentTable.setFrameStyle(qt.QFrame.NoFrame)
@@ -266,7 +280,9 @@ class mainWindowUi(qt.QWidget):
         self.experimentTable.setInputMethodHints(qt.Qt.ImhNone)
         for row in range(100):
             for col in range(2):
-                self.experimentTable.setItem(row, col, qt.QTableWidgetItem('0'))
+                item = qt.QTableWidgetItem('0')
+                item.setTextAlignment(qt.Qt.AlignCenter)
+                self.experimentTable.setItem(row, col, item)
         lout_2.addWidget(self.experimentTable, 0)
         lout_2.addStretch()
 
@@ -276,7 +292,7 @@ class mainWindowUi(qt.QWidget):
         self.controlTabsWidget.addTab(self.signalsTab, "Signals")
         self.progTab = qt.QWidget()
         self.controlTabsWidget.addTab(self.progTab, "Program")
-        lout_1.addWidget(self.controlTabsWidget)
+        lout_1.addWidget(self.controlTabsWidget, 1)
         lout_2 = qt.QVBoxLayout()
         self.signalsTab.setLayout(lout_2)
         lout_2.addWidget(Plot1D())
