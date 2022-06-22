@@ -12,7 +12,7 @@ class mainWindowUi(qt.QWidget):
         self.setLayout(mainLayout)
 
         short_label_width = 40
-        long_button_width = 100
+        short_button_width = 55
         long_label_width = 60
         button_height = 20
         short_line_input_width = 60
@@ -107,8 +107,10 @@ class mainWindowUi(qt.QWidget):
         lout_1.addLayout(lout_3)
         lout_3.addStretch()
         self.calib_view_button = qt.QPushButton("View")
+        self.calib_view_button.setFixedWidth(short_button_width)
         lout_3.addWidget(self.calib_view_button)
         self.calib_apply_button = qt.QPushButton("Apply")
+        self.calib_apply_button.setFixedWidth(short_button_width)
         lout_3.addWidget(self.calib_apply_button)
 
         lout_0.addStretch()
@@ -139,8 +141,10 @@ class mainWindowUi(qt.QWidget):
         lout_3.setSpacing(1)
         lout_3.addStretch()
         self.resetScanSampleRateButton = qt.QPushButton("Reset")
+        self.resetScanSampleRateButton.setFixedWidth(short_button_width)
         lout_3.addWidget(self.resetScanSampleRateButton)
         self.applyScanSampleRateButton = qt.QPushButton("Apply")
+        self.applyScanSampleRateButton.setFixedWidth(short_button_width)
         lout_3.addWidget(self.applyScanSampleRateButton)
 
         lout_0.addStretch()
@@ -195,8 +199,10 @@ class mainWindowUi(qt.QWidget):
         lout_5.setSpacing(1)
         lout_5.addStretch()
         self.resetModulationParamsButton = qt.QPushButton("Reset")
+        self.resetModulationParamsButton.setFixedWidth(short_button_width)
         lout_5.addWidget(self.resetModulationParamsButton)
         self.applyModulationParamsButton = qt.QPushButton("Apply")
+        self.applyModulationParamsButton.setFixedWidth(short_button_width)
         lout_5.addWidget(self.applyModulationParamsButton)
 
         # lout_0.addStretch()
@@ -209,7 +215,7 @@ class mainWindowUi(qt.QWidget):
         leftLayout.addLayout(lout_0, 0)
         logo = qt.QLabel()
         logo.setAlignment(qt.Qt.AlignHCenter)
-        pixmap = qt.QPixmap("./res/logo.png").scaledToWidth(long_button_width)
+        pixmap = qt.QPixmap("./res/logo.png").scaledToWidth(70)
         logo.setPixmap(pixmap)
         lout_0.addWidget(logo)
         sign = qt.QLabel("Nanocontrol v.0.1")
@@ -362,10 +368,10 @@ class mainWindowUi(qt.QWidget):
         lout_2_2.setSpacing(1)
         lout_2_2.setAlignment(qt.Qt.AlignCenter)
         self.terror0Button = qt.QPushButton("> 0 <")
-        self.terror0Button.setFixedWidth(55)
+        self.terror0Button.setFixedWidth(short_button_width)
         lout_2_2.addWidget(self.terror0Button)
         self.tresetButton = qt.QPushButton("reset")
-        self.tresetButton.setFixedWidth(55)
+        self.tresetButton.setFixedWidth(short_button_width)
         lout_2_2.addWidget(self.tresetButton)
         lout_2.addStretch()
 
@@ -433,10 +439,10 @@ class mainWindowUi(qt.QWidget):
         lout_2_2.setSpacing(1)
         lout_2_2.setAlignment(qt.Qt.AlignCenter)
         self.phase0Button = qt.QPushButton("> 0 <")
-        self.phase0Button.setFixedWidth(55)
+        self.phase0Button.setFixedWidth(short_button_width)
         lout_2_2.addWidget(self.phase0Button)
         self.phaseResetButton = qt.QPushButton("reset")
-        self.phaseResetButton.setFixedWidth(55)
+        self.phaseResetButton.setFixedWidth(short_button_width)
         lout_2_2.addWidget(self.phaseResetButton)
         lout_2.addStretch()
 
