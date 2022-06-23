@@ -570,30 +570,6 @@ class mainWindowUi(qt.QWidget):
         lout_0.addWidget(self.plot)
         # ########################################################
 
-        # #######################################################
-        # # self.connect_button = qt.QPushButton("Connect")
-        # # self.connect_button.setFixedWidth(long_button_width)
-        # # self.temp_input = qt.QLineEdit("Temperature profile in format of [float, float, ...]")
-        # # self.temp_input.setFixedWidth(long_button_width)
-        # # self.time_input = qt.QLineEdit("Time profile in format of [float, float, ...]")
-        # # self.time_input.setFixedWidth(long_button_width)
-        # # self.arm_button = qt.QPushButton("Arm")
-        # # self.arm_button.setFixedWidth(long_button_width)
-        # # self.run_button = qt.QPushButton("Run")
-        # # self.run_button.setFixedWidth(long_button_width)
-        # # self.data_button = qt.QPushButton("Get data")
-        # # self.data_button.setFixedWidth(long_button_width)
-        # # self.plot_button = qt.QPushButton("Plot")
-        # # self.plot_button.setFixedWidth(long_button_width)
-        # # leftLayout.addWidget(self.connect_button)
-        # # leftLayout.addWidget(self.temp_input)
-        # # leftLayout.addWidget(self.time_input)
-        # # leftLayout.addWidget(self.arm_button)
-        # # leftLayout.addWidget(self.run_button)
-        # # leftLayout.addWidget(self.data_button)
-        # # leftLayout.addWidget(self.plot_button)
-        # # 
-        # ########################################################
         
         ####### Status bar
         ########################################        
