@@ -13,9 +13,9 @@ class mainWindow(mainWindowUi):
 
         self.sys_on_button.clicked.connect(self.set_proxy)
         self.calib_apply_button.clicked.connect(self.apply_calib)
-        self.run_button.clicked.connect(self.fh_run)
-        self.plot_button.clicked.connect(self.plot_it)
-        self.data_button.clicked.connect(self.download_data)
+        # self.run_button.clicked.connect(self.fh_run)
+        # self.plot_button.clicked.connect(self.plot_it)
+        # self.data_button.clicked.connect(self.download_data)
 
     def download_data(self):
         URL = "http://160.103.33.50:8000/data/raw_data/raw_data.h5"
