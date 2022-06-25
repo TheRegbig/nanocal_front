@@ -11,7 +11,7 @@ class mainWindow(mainWindowUi):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
 
-        self.sys_on_button.clicked.connect(self.set_proxy)
+        self.sys_on_button.clicked.connect(self.set_connectionn)
         self.calib_apply_button.clicked.connect(self.apply_calib)
         # self.run_button.clicked.connect(self.fh_run)
         # self.plot_button.clicked.connect(self.plot_it)
@@ -35,10 +35,11 @@ class mainWindow(mainWindowUi):
         df = df[[0, 1, 2, 3, 4, 5]]
         self.plot.addCurve(list(range(len(df[0]))), df[0])
 
-    def set_proxy(self):
+    def set_connectionn(self):
         self.device = tango.DeviceProxy('NanoControl/NanoControl/1')
-        # device.init_device()
+        # self.device.init_device()
         self.device.set_timeout_millis(10000000)
+        self.device.set_connection()
     
     def apply_calib(self):
         self.device.apply_calibration()

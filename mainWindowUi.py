@@ -262,6 +262,9 @@ class mainWindowUi(qt.QWidget):
         self.experimentTempComboBox.addItem("Volt (V)")
         lout_3.addWidget(self.experimentTempComboBox)
 
+        lout_3 = qt.QHBoxLayout()
+        lout_3.setSpacing(0)
+        lout_2.addLayout(lout_3)
         self.experimentTable = qt.QTableWidget()
         self.experimentTable.setFixedSize(150, 207)
         self.experimentTable.setFrameStyle(qt.QFrame.NoFrame)
@@ -285,7 +288,7 @@ class mainWindowUi(qt.QWidget):
                 item = qt.QTableWidgetItem('0')
                 item.setTextAlignment(qt.Qt.AlignCenter)
                 self.experimentTable.setItem(row, col, item)
-        lout_2.addWidget(self.experimentTable, 0)
+        lout_3.addWidget(self.experimentTable, 0)
 
         lout_2.addSpacing(5)
 
@@ -319,6 +322,9 @@ class mainWindowUi(qt.QWidget):
         tempLabel.setAlignment(qt.Qt.AlignCenter)
         lout_3.addWidget(tempLabel)
         
+        lout_3 = qt.QHBoxLayout()
+        lout_3.setSpacing(0)
+        lout_2.addLayout(lout_3)
         self.setTable = qt.QTableWidget()
         self.setTable.setFixedSize(150, 23)
         self.setTable.setFrameStyle(qt.QFrame.NoFrame)
@@ -343,7 +349,7 @@ class mainWindowUi(qt.QWidget):
         item = qt.QTableWidgetItem('0')
         item.setTextAlignment(qt.Qt.AlignCenter)
         self.setTable.setItem(0, 1, item)
-        lout_2.addWidget(self.setTable, 0)
+        lout_3.addWidget(self.setTable, 0)
         lout_2.addSpacing(5)
         lout_3 = qt.QHBoxLayout()
         lout_3.setSpacing(1)
