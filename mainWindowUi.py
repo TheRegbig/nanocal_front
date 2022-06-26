@@ -283,6 +283,7 @@ class mainWindowUi(qt.QWidget):
         self.experimentTable.setColumnWidth(0,75)
         self.experimentTable.setColumnWidth(1,75)
         self.experimentTable.setInputMethodHints(qt.Qt.ImhNone)
+        self.experimentTable.setFocusPolicy(qt.Qt.NoFocus)
         for row in range(100):
             for col in range(2):
                 item = qt.QTableWidgetItem('0')
@@ -343,6 +344,7 @@ class mainWindowUi(qt.QWidget):
         self.setTable.setColumnWidth(0,75)
         self.setTable.setColumnWidth(1,75)
         self.setTable.setInputMethodHints(qt.Qt.ImhNone)
+        self.setTable.setFocusPolicy(qt.Qt.NoFocus)
         item = qt.QTableWidgetItem('0')
         item.setTextAlignment(qt.Qt.AlignCenter)
         self.setTable.setItem(0, 0, item)
@@ -599,6 +601,30 @@ class mainWindowUi(qt.QWidget):
         self.progressBar = qt.QProgressBar()
         lout_0.addWidget(self.progressBar,1)
         
+        ####### Filtering input
+        #######################################
+        class TableDelegate(qt.QItemDelegate):
+            def __init__(self, parent):
+                qt.QItemDelegate.__init__(self, parent)
+            def createEditor(self, parent, option, index):
+                spinbox = qt.QDoubleSpinBox(parent)
+                spinbox.setMaximum(100000)
+                return spinbox
+
+        self.experimentTable.setItemDelegate(TableDelegate(self.experimentTable))
+        self.experimentTable.setItemDelegate(TableDelegate(self.experimentTable))
+        self.setTable.setItemDelegate(TableDelegate(self.setTable))
+        self.setTable.setItemDelegate(TableDelegate(self.setTable))
+
+        float_validator_100 = qt.QRegExpValidator(qt.QRegExp("^[0-9]{1,2}\.[0-9]{1,2}$"))
+        int_validator_5 = qt.QRegExpValidator(qt.QRegExp("^[0-9]{1,5}$"))
+
+        self.scanSampleRateInput.setValidator(int_validator_5)
+        self.freqInput.setValidator(float_validator_100)
+        self.amplitudeInput.setValidator(float_validator_100)
+        self.offsetInput.setValidator(float_validator_100)
+        
+
 
 if __name__ == "__main__":
     import sys
