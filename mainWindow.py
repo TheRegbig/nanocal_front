@@ -1,5 +1,6 @@
 from silx.gui import qt
 from silx.gui.plot import Plot1D
+import numpy as np
 
 from mainWindowUi import mainWindowUi
 
@@ -13,6 +14,7 @@ class mainWindow(mainWindowUi):
 
         self.sys_on_button.clicked.connect(self.set_connectionn)
         self.calib_apply_button.clicked.connect(self.apply_calib)
+        self.armButton.clicked.connect(self.fh_arm)
         # self.run_button.clicked.connect(self.fh_run)
         # self.plot_button.clicked.connect(self.plot_it)
         # self.data_button.clicked.connect(self.download_data)
@@ -45,11 +47,16 @@ class mainWindow(mainWindowUi):
         self.device.apply_calibration()
 
     def fh_arm(self):
-        time = list(map(float, self.time_input.text().split(',')))
-        temp = list(map(float, self.temp_input.text().split(',')))
-        self.device.set_fh_time_profile(time)
-        self.device.set_fh_temp_profile(temp) 
-        self.device.arm_fast_heat()
+        xOption = 1000 if self.experimentTimeComboBox.currentIndex()==1 else 1    #0 - time in ms, 1 - time in s
+        yOption = self.experimentTempComboBox.currentIndex() #index 0 - temp in C, 1 - volt in V
+        uncorrectedProfile = np.array([[],[]], dtype=float)
+
+        print(xOption, yOption, uncorrectedProfile)
+        # time = list(map(float, self.time_input.text().split(',')))
+        # temp = list(map(float, self.temp_input.text().split(',')))
+        # self.device.set_fh_time_profile(time)
+        # self.device.set_fh_temp_profile(temp) 
+        # self.device.arm_fast_heat()
 
     def fh_run(self):
         self.device.run_fast_heat()
