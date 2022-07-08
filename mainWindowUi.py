@@ -1,5 +1,5 @@
 from silx.gui import qt
-from silx.gui.plot import Plot1D
+from silx.gui.plot import Plot1D, PlotWindow
 from silx.gui import icons
 
 class mainWindowUi(qt.QWidget):
@@ -292,6 +292,7 @@ class mainWindowUi(qt.QWidget):
         palette = self.experimentTable.palette()
         palette.setColor(qt.QPalette.Inactive, qt.QPalette.Highlight, qt.Qt.transparent)
         self.experimentTable.setPalette(palette)
+        self.experimentTable.setEditTriggers(qt.QAbstractItemView.AllEditTriggers)
         lout_3.addWidget(self.experimentTable, 0)
 
         lout_2.addSpacing(5)
@@ -357,6 +358,7 @@ class mainWindowUi(qt.QWidget):
         palette = self.setTable.palette()
         palette.setColor(qt.QPalette.Inactive, qt.QPalette.Highlight, qt.Qt.transparent)
         self.setTable.setPalette(palette)
+        self.setTable.setEditTriggers(qt.QAbstractItemView.AllEditTriggers)
         lout_3.addWidget(self.setTable, 0)
         lout_2.addSpacing(5)
         lout_3 = qt.QHBoxLayout()
@@ -376,10 +378,28 @@ class mainWindowUi(qt.QWidget):
         lout_1.addWidget(self.controlTabsWidget, 1)
         lout_2 = qt.QVBoxLayout()
         self.signalsTab.setLayout(lout_2)
-        lout_2.addWidget(Plot1D())
+        self.signalsPlot = PlotWindow(fit=False, mask=False, roi=False, colormap=False,
+                                    curveStyle=False, yInverted=False, logScale=False,
+                                    aspectRatio=False)
+        self.signalsPlot.setAxesMargins(left=0.005, top=0.005, right=0.005, bottom=0.005)
+        self.signalsPlot.setDataMargins(xMinMargin=0.05, xMaxMargin=0.05, yMinMargin=0.05, yMaxMargin=0.05)
+        self.signalsPlot.getYAxis().setLabel('')
+        self.signalsPlot.getXAxis().setLabel('')
+        self.signalsPlot.setGraphGrid('major')
+        self.signalsPlot.addCurve([0,1], [0,1], linestyle='') # just for better view at start
+        lout_2.addWidget(self.signalsPlot)
         lout_3 = qt.QVBoxLayout()
         self.progTab.setLayout(lout_3)
-        lout_3.addWidget(Plot1D())
+        self.progPlot = PlotWindow(fit=False, mask=False, roi=False, colormap=False,
+                                    curveStyle=False, yInverted=False, logScale=False,
+                                    aspectRatio=False)
+        self.progPlot.setAxesMargins(left=0.1, top=0.05, right=0.05, bottom=0.1)
+        self.progPlot.setDataMargins(xMinMargin=0.05, xMaxMargin=0.05, yMinMargin=0.05, yMaxMargin=0.05)
+        self.progPlot.getXAxis().setLabel(self.experimentTimeComboBox.currentText())
+        self.progPlot.getYAxis().setLabel(self.experimentTempComboBox.currentText())
+        self.progPlot.setGraphGrid('major')
+        self.progPlot.addCurve([0,1], [0,1], linestyle='')
+        lout_3.addWidget(self.progPlot)
 
         # Values area
         valuesBox = qt.QGroupBox("Values")
