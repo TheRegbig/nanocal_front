@@ -293,6 +293,7 @@ class mainWindowUi(qt.QWidget):
         palette.setColor(qt.QPalette.Inactive, qt.QPalette.Highlight, qt.Qt.transparent)
         self.experimentTable.setPalette(palette)
         self.experimentTable.setEditTriggers(qt.QAbstractItemView.AllEditTriggers)
+        self.experimentTable.resizeRowsToContents()
         lout_3.addWidget(self.experimentTable, 0)
 
         lout_2.addSpacing(5)
@@ -359,6 +360,7 @@ class mainWindowUi(qt.QWidget):
         palette.setColor(qt.QPalette.Inactive, qt.QPalette.Highlight, qt.Qt.transparent)
         self.setTable.setPalette(palette)
         self.setTable.setEditTriggers(qt.QAbstractItemView.AllEditTriggers)
+        self.setTable.resizeRowsToContents()
         lout_3.addWidget(self.setTable, 0)
         lout_2.addSpacing(5)
         lout_3 = qt.QHBoxLayout()
