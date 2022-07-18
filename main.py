@@ -5,11 +5,8 @@ import os
 
 
 if __name__ == "__main__":
-    if not os.path.exists('./data'):
-        os.makedirs('./data')
-    if not os.path.exists('./settings'):
-        os.makedirs('./settings')
     app = qt.QApplication(sys.argv)
+    #app.setStyle('Fusion')
     example = mainWindow()
     example.show()
     sys.exit(app.exec())
