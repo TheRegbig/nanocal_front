@@ -3,6 +3,8 @@ from silx.gui.plot import Plot1D
 import numpy as np
 
 from mainWindowUi import mainWindowUi
+from settings import *
+from constants import *
 
 import tango
 import requests
@@ -14,25 +16,60 @@ class mainWindow(mainWindowUi):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
 
-        self.TANGO_HOST = "lid13ctrl1.esrf.fr:20000"
-        self.DEVICE_PROXY= "id13/nanocontrol/1"
-        self.HTTP_HOST = "http://160.103.33.50:8000/"  
-        self.DATA_PATH = "data/"
-        self.SETTINGS_PATH = "settings/"
-        self.CALIB_PATH = self.SETTINGS_PATH + "default_calibration.json"
+        try:
+            self.settings = SettingsParser(SETTINGS_FILE_REL_PATH).get_params()
+        except:
+            error_view = qt.QMessageBox()
+            error_text = "Settings file is missing or corrupted!"
+            error_view.setText(error_text)
+            error_view.setWindowTitle("Error")
+            error_view.setIcon(qt.QMessageBox.Critical)
+            error_view.addButton(qt.QMessageBox.Ok)
+            error_view.exec()
+            quit()
+        
+        self.TANGO_HOST = self.settings.tango_host
+        self.DEVICE_PROXY= self.settings.device_proxy
+        self.HTTP_HOST = self.settings. http_host
+        self.DATA_PATH = self.settings.data_path
+        self.CALIB_PATH = self.settings.calib_path
 
-        self.device = tango.DeviceProxy(self.DEVICE_PROXY)
+        try:
+            self.device = tango.DeviceProxy(self.DEVICE_PROXY)
+        except:
+            error_view = qt.QMessageBox()
+            error_text = "No connection to the device! Check proxy in settings."
+            error_view.setText(error_text)
+            error_view.setWindowTitle("Error")
+            error_view.setIcon(qt.QMessageBox.Critical)
+            error_view.addButton(qt.QMessageBox.Ok)
+            error_view.exec()
 
-        if not os.path.exists(self.SETTINGS_PATH):
-            os.makedirs(self.SETTINGS_PATH)
         if not os.path.exists(self.DATA_PATH):
-            os.makedirs(self.DATA_PATH)
+            error_view = qt.QMessageBox()
+            error_text = "Incorrect data path specified. It will be set to ./data/"
+            error_view.setText(error_text)
+            error_view.setWindowTitle("Warning")
+            error_view.setIcon(qt.QMessageBox.Warning)
+            error_view.addButton(qt.QMessageBox.Ok)
+            error_view.exec()
+            if not os.path.exists('./data/'):
+                os.makedirs('./data/')
+            self.DATA_PATH = os.path.abspath('./data/')
         self.sysDataPathInput.setText(os.path.abspath(self.DATA_PATH))
         self.sysDataPathInput.setCursorPosition(0)
+
         if os.path.exists(self.CALIB_PATH):
             self.calibPathInput.setText(os.path.abspath(self.CALIB_PATH))
             self.calibPathInput.setCursorPosition(0)
         else:
+            error_view = qt.QMessageBox()
+            error_text = "Incorrect calibration file specified. It will be set to default calibration"
+            error_view.setText(error_text)
+            error_view.setWindowTitle("Warning")
+            error_view.setIcon(qt.QMessageBox.Warning)
+            error_view.addButton(qt.QMessageBox.Ok)
+            error_view.exec()
             self.calibPathInput.setText('select calibration file!')
 
         self.sysOnButton.clicked.connect(self.set_connection)
@@ -47,9 +84,19 @@ class mainWindow(mainWindowUi):
         self.startButton.clicked.connect(self.fh_run)
 
     def set_connection(self):
-        self.device.set_timeout_millis(10000000)
-        self.device.set_connection()
-        [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
+        try:
+            self.device.set_timeout_millis(10000000)
+            self.device.set_connection()
+            [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
+        except:
+            error_view = qt.QMessageBox()
+            error_text = "No connection to the device! Check settings and logs."
+            error_view.setText(error_text)
+            error_view.setWindowTitle("Error")
+            error_view.setIcon(qt.QMessageBox.Critical)
+            error_view.addButton(qt.QMessageBox.Ok)
+            error_view.exec()
+
     
     def disconnect(self):
         self.device.disconnect()
