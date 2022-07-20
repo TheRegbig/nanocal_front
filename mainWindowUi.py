@@ -41,11 +41,26 @@ class mainWindowUi(qt.QWidget):
         font.setBold(True)
         self.sysOffButton.setFont(font)
         lout_1.addWidget(self.sysOffButton, 1)
-        self.sysHelpButton = qt.QToolButton()
-        self.sysHelpButton.setToolTip("Help")
-        self.sysHelpButton.setIcon(icons.getQIcon('zoom'))
-        lout_1.addWidget(self.sysHelpButton, 0)
+        self.sys_setup_button = qt.QToolButton()
+        self.sys_setup_button.setToolTip("Device settings")
+        self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
+        lout_1.addWidget(self.sys_setup_button, 0)
         lout_1.setSpacing(1)
+
+        
+        # ####### Experiment Group Box
+        # ########################################
+        self.experimentBox = qt.QGroupBox("Experiment")
+        leftLayout.addWidget(self.experimentBox, 0)
+        lout_0 = qt.QVBoxLayout()
+        self.experimentBox.setLayout(lout_0)
+
+        lout_0.addStretch()
+        hline = qt.QFrame()
+        hline.setFrameShape(qt.QFrame.HLine)
+        hline.setStyleSheet("color: rgb(220, 220, 220);")
+        lout_0.addWidget(hline)
+        lout_0.addStretch()
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
@@ -62,31 +77,6 @@ class mainWindowUi(qt.QWidget):
         self.sysDataPathButton.setToolTip("Browse data path")
         self.sysDataPathButton.setIcon(icons.getQIcon('document-open'))
         lout_2.addWidget(self.sysDataPathButton)
-
-        
-        # ####### Experiment Group Box
-        # ########################################
-        self.experimentBox = qt.QGroupBox("Experiment")
-        leftLayout.addWidget(self.experimentBox, 0)
-        lout_0 = qt.QVBoxLayout()
-        self.experimentBox.setLayout(lout_0)
-
-        lout_1 = qt.QHBoxLayout()
-        lout_0.addLayout(lout_1)
-        lout_1.setSpacing(1)
-        self.loadConfigButton = qt.QPushButton("Load config")
-        self.loadConfigButton.setSizePolicy(qt.QSizePolicy.Expanding, qt.QSizePolicy.Expanding)
-        lout_1.addWidget(self.loadConfigButton)
-        self.saveConfigButton = qt.QPushButton("Save config")
-        self.saveConfigButton.setSizePolicy(qt.QSizePolicy.Expanding, qt.QSizePolicy.Expanding)
-        lout_1.addWidget(self.saveConfigButton)
-
-        lout_0.addStretch()
-        hline = qt.QFrame()
-        hline.setFrameShape(qt.QFrame.HLine)
-        hline.setStyleSheet("color: rgb(220, 220, 220);")
-        lout_0.addWidget(hline)
-        lout_0.addStretch()
 
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
@@ -612,10 +602,6 @@ class mainWindowUi(qt.QWidget):
         lout_0 = qt.QHBoxLayout()
         rightLayout.addLayout(lout_0)
         lout_0.setSpacing(1)
-        self.sys_setup_button = qt.QToolButton()
-        self.sys_setup_button.setToolTip("Device settings")
-        self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
-        lout_0.addWidget(self.sys_setup_button)
         lout_0.addWidget(qt.QLabel("Hardware:"))
         self.hardware_label = qt.QLabel(' ---')
         self.hardware_label.setFixedWidth(80)

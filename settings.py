@@ -15,6 +15,22 @@ class Params:
     def __str__(self):
         return str(vars(self))
 
+    def get_dict(self):
+        params_dict = {}
+        params_dict[SETTINGS_FIELD] = {}
+        params_dict[SETTINGS_FIELD][TANGO_FIELD] = {
+            TANGO_HOST_FIELD: self.tango_host,
+            DEVICE_PROXY_FIELD: self.device_proxy
+            }
+        params_dict[SETTINGS_FIELD][HTTP_FIELD] = {
+            HTTP_HOST: self.http_host
+            }
+        params_dict[SETTINGS_FIELD][PATHS_FIELD] = {
+            CALIB_PATH_FIELD: self.calib_path,
+            DATA_PATH_FIELD: self.data_path
+            }
+        return params_dict
+
 class Settings:
     """Reads a JSON configuration file."""
 
@@ -56,11 +72,11 @@ class SettingsParser:
         Raises:
             ValueError if any field doesn't exist.
         """
-        json_dict = Settings(path).json()
-        if SETTINGS_FIELD not in json_dict:
+        self._json_dict = Settings(path).json()
+        if SETTINGS_FIELD not in self._json_dict:
             raise ValueError("No '{}' field found in the settings file.".format(SETTINGS_FIELD))
         else:
-            self._settings_dict = json_dict[SETTINGS_FIELD]
+            self._settings_dict = self._json_dict[SETTINGS_FIELD]
             for field in [TANGO_FIELD, HTTP_FIELD, PATHS_FIELD]:
                 if field not in self._settings_dict:
                     raise ValueError("No '{}' field found in the settings file.".format(field))

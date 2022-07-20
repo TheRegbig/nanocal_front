@@ -3,6 +3,8 @@ from silx.gui.plot import Plot1D
 import numpy as np
 
 from mainWindowUi import mainWindowUi
+from errorWindow import *
+from configWindow import *
 from settings import *
 from constants import *
 
@@ -16,66 +18,33 @@ class mainWindow(mainWindowUi):
     def __init__(self, parent=None):
         super(mainWindow, self).__init__(parent)
 
-        try:
-            self.settings = SettingsParser(SETTINGS_FILE_REL_PATH).get_params()
-        except:
-            error_view = qt.QMessageBox()
-            error_text = "Settings file is missing or corrupted!"
-            error_view.setText(error_text)
-            error_view.setWindowTitle("Error")
-            error_view.setIcon(qt.QMessageBox.Critical)
-            error_view.addButton(qt.QMessageBox.Ok)
-            error_view.exec()
+        self.device = None          # patch for disconnect method. to be changed later
+        self.load_settings()
+        if not self.settings: 
             quit()
-        
-        self.TANGO_HOST = self.settings.tango_host
-        self.DEVICE_PROXY= self.settings.device_proxy
-        self.HTTP_HOST = self.settings. http_host
-        self.DATA_PATH = self.settings.data_path
-        self.CALIB_PATH = self.settings.calib_path
 
-        try:
-            self.device = tango.DeviceProxy(self.DEVICE_PROXY)
-        except:
-            error_view = qt.QMessageBox()
-            error_text = "No connection to the device! Check proxy in settings."
-            error_view.setText(error_text)
-            error_view.setWindowTitle("Error")
-            error_view.setIcon(qt.QMessageBox.Critical)
-            error_view.addButton(qt.QMessageBox.Ok)
-            error_view.exec()
-
-        if not os.path.exists(self.DATA_PATH):
-            error_view = qt.QMessageBox()
+        if not os.path.exists(self.settings.data_path):
             error_text = "Incorrect data path specified. It will be set to ./data/"
-            error_view.setText(error_text)
-            error_view.setWindowTitle("Warning")
-            error_view.setIcon(qt.QMessageBox.Warning)
-            error_view.addButton(qt.QMessageBox.Ok)
-            error_view.exec()
+            errorWindow(error_text)
             if not os.path.exists('./data/'):
                 os.makedirs('./data/')
-            self.DATA_PATH = os.path.abspath('./data/')
-        self.sysDataPathInput.setText(os.path.abspath(self.DATA_PATH))
+            self.settings.data_path = os.path.abspath('./data/')
+        self.sysDataPathInput.setText(os.path.abspath(self.settings.data_path))
         self.sysDataPathInput.setCursorPosition(0)
 
-        if os.path.exists(self.CALIB_PATH):
-            self.calibPathInput.setText(os.path.abspath(self.CALIB_PATH))
+        if os.path.exists(self.settings.calib_path):
+            self.calibPathInput.setText(os.path.abspath(self.settings.calib_path))
             self.calibPathInput.setCursorPosition(0)
         else:
-            error_view = qt.QMessageBox()
             error_text = "Incorrect calibration file specified. It will be set to default calibration"
-            error_view.setText(error_text)
-            error_view.setWindowTitle("Warning")
-            error_view.setIcon(qt.QMessageBox.Warning)
-            error_view.addButton(qt.QMessageBox.Ok)
-            error_view.exec()
-            self.calibPathInput.setText('select calibration file!')
+            errorWindow(error_text)
+            self.calibPathInput.setText('default. select calibration file!')
+            self.settings.calib_path = 'default calibration'
 
         self.sysOnButton.clicked.connect(self.set_connection)
         self.sysOffButton.clicked.connect(self.disconnect)
         self.sysDataPathButton.clicked.connect(self.select_data_path)
-        self.sysHelpButton.clicked.connect(self.show_help)
+        self.sys_setup_button.clicked.connect(self.show_help)
 
         self.calibPathButton.clicked.connect(self.select_calibration_file)
         self.calibViewButton.clicked.connect(self.view_calibraton_info)
@@ -85,48 +54,45 @@ class mainWindow(mainWindowUi):
 
     def set_connection(self):
         try:
+            self.device = tango.DeviceProxy(self.settings.device_proxy)
             self.device.set_timeout_millis(10000000)
             self.device.set_connection()
             [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
+            if self.settings.calib_path == 'default calibration':
+                self.apply_default_calib()
+            else: 
+                self.apply_calib()
         except:
-            error_view = qt.QMessageBox()
             error_text = "No connection to the device! Check settings and logs."
-            error_view.setText(error_text)
-            error_view.setWindowTitle("Error")
-            error_view.setIcon(qt.QMessageBox.Critical)
-            error_view.addButton(qt.QMessageBox.Ok)
-            error_view.exec()
+            errorWindow(error_text)
 
     
     def disconnect(self):
-        self.device.disconnect()
+        if self.device:
+           self.device.disconnect()
         [item.setEnabled(False) for item in [self.experimentBox, self.controlTab]]
     
     def select_data_path(self):
         dpath = qt.QFileDialog.getExistingDirectory(self, "Choose folder to save experiment files", \
                                                     None, qt.QFileDialog.ShowDirsOnly)
-        self.sysDataPathInput.setText(os.path.abspath(dpath))
+        if dpath: 
+            self.sysDataPathInput.setText(os.path.abspath(dpath))
+            self.settings.data_path = dpath
+            print(self.sysDataPathInput.text())
         self.sysDataPathInput.setCursorPosition(0)
 
     def show_help(self):
-        self.help_view = qt.QMessageBox()
-        info_blob = self.device.get_info[1]
-        info_values = []
-        for item in info_blob:
-            info_values.append(item['value'])
-        info_text = 'Developer: {}\nContact: {} \nModel: {} \nVersion: {}\n'.format(*info_values)
-        self.help_view.setText(info_text)
-        self.help_view.setWindowTitle("Help")
-        self.help_view.setIcon(qt.QMessageBox.Information)
+        self.configWindow = configWindow(parent=self)
+        self.configWindow.show()
 
-        self.help_view.addButton(qt.QMessageBox.Ok)
-        self.help_view.exec_()
     # ===================================
     # Calibration   
 
     def select_calibration_file(self):
         fname = qt.QFileDialog.getOpenFileName(self, "Choose calibration file", None, "*.json")[0]
-        self.calibPathInput.setText(os.path.abspath(fname))
+        if fname: 
+            self.calibPathInput.setText(os.path.abspath(fname))
+            self.settings.calib_path = fname
         self.calibPathInput.setCursorPosition(0)
 
     def apply_calib(self):
@@ -186,7 +152,7 @@ class mainWindow(mainWindowUi):
         self.device.arm_fast_heat()
 
     def _fh_download_data(self):
-        URL = self.HTTP_HOST+"data/raw_data/raw_data.h5"
+        URL = self.settings.http_host+"data/raw_data/raw_data.h5"
         response = requests.get(URL, verify=False)
         with open('./data/raw_data.h5', 'wb') as f:
             f.write(response.content)
@@ -208,4 +174,36 @@ class mainWindow(mainWindowUi):
         self.device.run_fast_heat()
         self._fh_download_data()
         self._fh_plot_data()
+    
+    def save_settings(self, fpath=False):
+        if not fpath:
+            fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
+        else:
+            fpath = qt.QFileDialog.getSaveFileName(self, "Select file and path to save settings:", None, "*.json")[0]
+        if fpath:
+            with open(fpath, 'w') as f:
+                json.dump(self.settings.get_dict(), f, separators=(',', ': '), indent=4)
 
+    def load_settings(self, fpath=False):
+        if not fpath:
+            fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
+        else:
+            fpath = qt.QFileDialog.getOpenFileName(self, "Choose file with settings:", None, "*.json")[0]
+        try:
+            self.settings = SettingsParser(fpath).get_params()
+            self.disconnect()
+        except:
+            error_text = "Settings file is missing or corrupted! Settings will be reset to default."
+            errorWindow(error_text)
+            self.settings = Params()
+
+    def reset_settings(self):
+        self.settings = Params()
+        self.save_settings()
+        self.disconnect()
+
+    def closeEvent(self, event):
+        # dumping current settings to ./settings/.settings.json and closing all the windows
+        self.save_settings()
+        for window in qt.QApplication.topLevelWidgets():
+            window.close()

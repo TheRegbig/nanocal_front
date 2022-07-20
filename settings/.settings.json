@@ -1,8 +1,8 @@
 {
-	"Settings": {
+    "Settings": {
         "TANGO": {
-            "TANGO_HOST":"lid13ctrl1.esrf.fr:20000", "help": "lid13ctrl1.esrf.fr:20000 or lid13tmp0.esrf.fr:10000",
-            "DEVICE_PROXY":"ID13/NanoControl/1"
+            "TANGO_HOST": "lid13ctrl1.esrf.fr:20000",
+            "DEVICE_PROXY": "ID13/NanoControl/1"
         },
         "HTTP": {
             "HTTP_HOST": "http://160.103.33.50:8000/"
@@ -10,7 +10,6 @@
         "PATHS": {
             "CALIB_PATH": "./settings/calibration.json",
             "DATA_PATH": "./data/"
-            
         }
-	}
+    }
 }
