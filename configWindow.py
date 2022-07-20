@@ -9,7 +9,9 @@ class configWindow(qt.QDialog):
     def __init__(self, parent=None):
         super(configWindow, self).__init__(parent=parent)
 
-        self.setWindowTitle("Configuration")
+        # ####### UI setup
+        # ########################################
+        self.setWindowTitle("Help & Configuration")
         self.setFixedHeight(400)
         self.setFixedWidth(300)
         self.setWindowFlag(qt.Qt.WindowContextHelpButtonHint, False)
@@ -32,7 +34,17 @@ class configWindow(qt.QDialog):
         labl.setAlignment(qt.Qt.AlignHCenter)
         mainLayout.addWidget(labl)
 
+        ######## Configuration parameters
         mainLayout.addStretch()
+        mainLayout.addStretch()
+        hline = qt.QFrame()
+        hline.setFrameShape(qt.QFrame.HLine)
+        hline.setStyleSheet("color: rgb(220, 220, 220);")
+        mainLayout.addWidget(hline)
+        labl = qt.QLabel("Configuration parameters")
+        labl.setAlignment(qt.Qt.AlignHCenter)
+        labl.setFont(qt.QFont("Times", weight=qt.QFont.Bold))
+        mainLayout.addWidget(labl)
 
         lout_1 = qt.QHBoxLayout()
         mainLayout.addLayout(lout_1)
@@ -76,8 +88,8 @@ class configWindow(qt.QDialog):
         self.resetConfigButton = qt.QPushButton("Reset")
         lout_1.addWidget(self.resetConfigButton)
 
-        ## end of UI setup
-
+        # ####### end of UI setup
+        # ########################################
         self.applyConfigButton.clicked.connect(self.apply_settings)
         self.saveConfigButton.clicked.connect(self.save_settings)
         self.loadConfigButton.clicked.connect(self.load_settings)

@@ -96,11 +96,13 @@ class mainWindow(mainWindowUi):
         self.calibPathInput.setCursorPosition(0)
 
     def apply_calib(self):
-        with open(self.calibPathInput.text(), 'r') as f:
-            raw_calib = json.load(f)
-            str_calib = json.dumps(raw_calib)
-            self.device.load_calibration(str_calib)
-            self.device.apply_calibration()
+        fpath = self.calibPathInput.text()
+        if os.path.exists(os.path.abspath(fpath)):
+            with open(self.calibPathInput.text(), 'r') as f:
+                raw_calib = json.load(f)
+                str_calib = json.dumps(raw_calib)
+                self.device.load_calibration(str_calib)
+                self.device.apply_calibration()
 
     def view_calibraton_info(self):
         # change to window with normal information
@@ -176,6 +178,7 @@ class mainWindow(mainWindowUi):
         self._fh_plot_data()
     
     def save_settings(self, fpath=False):
+        # function is used to save settings to default file or to special file if specified
         if not fpath:
             fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
         else:
@@ -185,6 +188,7 @@ class mainWindow(mainWindowUi):
                 json.dump(self.settings.get_dict(), f, separators=(',', ': '), indent=4)
 
     def load_settings(self, fpath=False):
+        # function is used to load default settings or to load special config from file if specified
         if not fpath:
             fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
         else:
@@ -198,6 +202,7 @@ class mainWindow(mainWindowUi):
             self.settings = Params()
 
     def reset_settings(self):
+        # reset config params; used default attributes from Params class
         self.settings = Params()
         self.save_settings()
         self.disconnect()

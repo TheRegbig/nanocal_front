@@ -7,7 +7,7 @@ class Params:
         self.tango_host = "lid13ctrl1.esrf.fr:20000"
         self.device_proxy = "ID13/NanoControl/1"
 
-        self.http_host = "http://160.103.33.50:8000/"
+        self.http_host = "http://id13tmp0:8000/"
 
         self.calib_path = "./settings/calibration.json"
         self.data_path = "./data/"

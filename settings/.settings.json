@@ -5,7 +5,7 @@
             "DEVICE_PROXY": "ID13/NanoControl/1"
         },
         "HTTP": {
-            "HTTP_HOST": "http://160.103.33.50:8000/"
+            "HTTP_HOST": "http://id13tmp0:8000/"
         },
         "PATHS": {
             "CALIB_PATH": "./settings/calibration.json",
