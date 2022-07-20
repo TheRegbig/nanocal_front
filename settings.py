@@ -2,7 +2,7 @@ import json
 from constants import *
 
 
-class Params:
+class mainParams:
     def __init__(self):
         self.tango_host = "lid13ctrl1.esrf.fr:20000"
         self.device_proxy = "ID13/NanoControl/1"
@@ -86,13 +86,13 @@ class SettingsParser:
         self._parse_params()
         self._check_invalid_fields()
 
-    def get_params(self) -> Params:
+    def get_params(self) -> mainParams:
         """Provides explicit access to the read TangoParams."""
         return self._params
 
     def _parse_params(self):
         """Parses all necessary parameters and fills instance."""
-        self._params = Params()
+        self._params = mainParams()
 
         for field in [TANGO_HOST_FIELD, DEVICE_PROXY_FIELD]:
             if field not in self._settings_dict[TANGO_FIELD] or \

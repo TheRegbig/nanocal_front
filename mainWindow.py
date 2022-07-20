@@ -103,11 +103,24 @@ class mainWindow(mainWindowUi):
                 str_calib = json.dumps(raw_calib)
                 self.device.load_calibration(str_calib)
                 self.device.apply_calibration()
+                self.get_calib_from_device()
+
+    def apply_default_calib(self):
+        self.device.apply_default_calibration()
+        self.calib_view.setText(str(self.device.get_calibration_comment[1][0]['value']))
+        self.calibPathInput.setText('default calibration')
+        self.get_calib_from_device()
+
+    def get_calib_from_device(self):
+        calib_str = self.device.get_current_calibration[1][0]['value']
+        calib_dict = json.loads(calib_str)
+        self.calibration = Dict2Class(calib_dict)
+        print(self.calibration.comment)
 
     def view_calibraton_info(self):
         # change to window with normal information
         self.calib_view = qt.QMessageBox()
-        self.calib_view.setText(str(self.device.get_calibration_comment[1][0]['value']))
+        self.calib_view.setText(self.calibration.comment)
         self.calib_view.setWindowTitle("Calibration info:")
         self.calib_view.setIcon(qt.QMessageBox.Question)
 
@@ -117,11 +130,6 @@ class mainWindow(mainWindowUi):
         self.calib_view.addButton(qt.QMessageBox.Ok)
         self.calib_view.exec_()
     
-    def apply_default_calib(self):
-        self.device.apply_default_calibration()
-        self.calib_view.setText(str(self.device.get_calibration_comment[1][0]['value']))
-        self.calibPathInput.setText('default calibration')
-
     # ===================================
     # Fast heating
 
@@ -199,11 +207,11 @@ class mainWindow(mainWindowUi):
         except:
             error_text = "Settings file is missing or corrupted! Settings will be reset to default."
             errorWindow(error_text)
-            self.settings = Params()
+            self.settings = mainParams()
 
     def reset_settings(self):
         # reset config params; used default attributes from Params class
-        self.settings = Params()
+        self.settings = mainParams()
         self.save_settings()
         self.disconnect()
 
@@ -212,3 +220,11 @@ class mainWindow(mainWindowUi):
         self.save_settings()
         for window in qt.QApplication.topLevelWidgets():
             window.close()
+
+
+
+# Turns a dictionary into a class
+class Dict2Class(object):
+    def __init__(self, my_dict):
+        for key in my_dict:
+            setattr(self, key, my_dict[key])
