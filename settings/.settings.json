@@ -8,7 +8,7 @@
             "HTTP_HOST": "http://id13tmp0:8000/"
         },
         "PATHS": {
-            "CALIB_PATH": "./settings/calibration.json",
+            "CALIB_PATH": "C:/Users/alexey0703/prog/nanocal/nanocal_front/settings/calibration.json",
             "DATA_PATH": "./data/"
         }
     }

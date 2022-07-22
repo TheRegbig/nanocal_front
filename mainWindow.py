@@ -5,6 +5,7 @@ import numpy as np
 from mainWindowUi import mainWindowUi
 from errorWindow import *
 from configWindow import *
+from calibWindow import *
 from settings import *
 from constants import *
 
@@ -107,28 +108,17 @@ class mainWindow(mainWindowUi):
 
     def apply_default_calib(self):
         self.device.apply_default_calibration()
-        self.calib_view.setText(str(self.device.get_calibration_comment[1][0]['value']))
-        self.calibPathInput.setText('default calibration')
         self.get_calib_from_device()
+        self.calibPathInput.setText('default calibration')
 
     def get_calib_from_device(self):
         calib_str = self.device.get_current_calibration[1][0]['value']
         calib_dict = json.loads(calib_str)
         self.calibration = Dict2Class(calib_dict)
-        print(self.calibration.comment)
 
     def view_calibraton_info(self):
-        # change to window with normal information
-        self.calib_view = qt.QMessageBox()
-        self.calib_view.setText(self.calibration.comment)
-        self.calib_view.setWindowTitle("Calibration info:")
-        self.calib_view.setIcon(qt.QMessageBox.Question)
-
-        reset_button = self.calib_view.addButton('Reset', qt.QMessageBox.ActionRole)
-        reset_button.clicked.disconnect()
-        reset_button.clicked.connect(self.apply_default_calib)
-        self.calib_view.addButton(qt.QMessageBox.Ok)
-        self.calib_view.exec_()
+        self.calibWindow = calibWindow(parent=self)
+        self.calibWindow.show()
     
     # ===================================
     # Fast heating

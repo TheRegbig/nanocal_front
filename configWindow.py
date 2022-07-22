@@ -80,13 +80,18 @@ class configWindow(qt.QDialog):
         mainLayout.addLayout(lout_1)
         lout_1.setSpacing(1)
         self.applyConfigButton = qt.QPushButton("Apply")
+        self.applyConfigButton.setFocusPolicy(qt.Qt.NoFocus)
         lout_1.addWidget(self.applyConfigButton)
         self.loadConfigButton = qt.QPushButton("Load")
+        self.loadConfigButton.setFocusPolicy(qt.Qt.NoFocus)
         lout_1.addWidget(self.loadConfigButton)
         self.saveConfigButton = qt.QPushButton("Save")
+        self.saveConfigButton.setFocusPolicy(qt.Qt.NoFocus)
         lout_1.addWidget(self.saveConfigButton)
         self.resetConfigButton = qt.QPushButton("Reset")
+        self.resetConfigButton.setFocusPolicy(qt.Qt.NoFocus)
         lout_1.addWidget(self.resetConfigButton)
+
 
         # ####### end of UI setup
         # ########################################
