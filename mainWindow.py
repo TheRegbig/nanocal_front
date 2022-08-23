@@ -13,6 +13,7 @@ import requests
 import pandas as pd
 import json
 import os
+import h5py
 
 
 class mainWindow(mainWindowUi):
@@ -52,6 +53,8 @@ class mainWindow(mainWindowUi):
         self.calibApplyButton.clicked.connect(self.apply_calib)
         self.armButton.clicked.connect(self.fh_arm)
         self.startButton.clicked.connect(self.fh_run)
+
+        self.applyScanSampleRateButton.clicked.connect(self._fh_plot_data)
 
     def set_connection(self):
         
@@ -168,28 +171,38 @@ class mainWindow(mainWindowUi):
         self.device.set_fh_temp_profile(self.temp_table) 
         self.device.arm_fast_heat()
 
-    def _fh_download_data(self):
+    def _fh_download_raw_data(self):
         URL = self.settings.http_host+"data/raw_data/raw_data.h5"
         response = requests.get(URL, verify=False)
         with open('./data/raw_data.h5', 'wb') as f:
             f.write(response.content)
+    
+    def _fh_download_exp_data(self):
+        URL = self.settings.http_host+"data/exp_data.h5"
+        response = requests.get(URL, verify=False)
+        with open('./data/exp_data.h5', 'wb') as f:
+            f.write(response.content)
+
+    def _fh_transform_exp_data(self):
+        self.exp_data = pd.DataFrame({})
+        with h5py.File('./data/exp_data.h5', 'r') as f:
+            data = f['data']
+            for key in list(data.keys()):
+                self.exp_data[key] = data[key][:]
 
     def _fh_plot_data(self):
-        fpath = './data/raw_data.h5'
-        df = pd.read_hdf(fpath, key='dataset')
-        chan_num = 6 # self._ai_params.high_channel - self._ai_params.low_channel + 1
-        one_chan_len = int(len(df) / chan_num)
-        multi_index = pd.MultiIndex.from_product([list(range(one_chan_len)), list(range(chan_num))])
-        df.index = multi_index
-        df = df.unstack()
-        df.columns = df.columns.droplevel()
-        df = df[[0, 1, 2, 3, 4, 5]]
-        self.resultPlot.addCurve(list(range(len(df[0]))), df[0])
+        for key in list(self.exp_data.keys()):
+            self.resultsDataWidget.addCurve(list(range(len(self.exp_data[key]))), 
+                                            self.exp_data[key], 
+                                            key)
+
 
     def fh_run(self):
         self.mainTabWidget.setCurrentIndex(1) 
         self.device.run_fast_heat()
-        self._fh_download_data()
+        self._fh_download_raw_data()
+        self._fh_download_exp_data()
+        self._fh_transform_exp_data()
         self._fh_plot_data()
     
     def save_settings(self, fpath=False):

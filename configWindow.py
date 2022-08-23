@@ -41,7 +41,7 @@ class configWindow(qt.QDialog):
         mainLayout.addWidget(self.configGroupBox)
 
         lout_0 = qt.QVBoxLayout()
-        lout_0.setSpacing(0)
+        lout_0.setSpacing(2)
         self.configGroupBox.setLayout(lout_0)
         labl = qt.QLabel("Configuration parameters")
         labl.setAlignment(qt.Qt.AlignHCenter)

@@ -15,7 +15,9 @@ class resultsDataWidget(qt.QWidget):
                                     colormap=False, aspectRatio=False, 
                                     fit=True, curveStyle=False,
                                     control=True, position=True)
-        self.resultPlot.addCurve([0,1,2,3,4,5,6],[0,1,2,3,3,2,1], 'curve 1')
-        self.resultPlot.addCurve([0,1,2,3,4,5,6],[0,-1,-2,-3,-3,-2,-1], 'curve 2')
         self.resultPlot.show()
         main_lout.addWidget(self.resultPlot)
+
+
+    def addCurve(self, x, y, legend):
+        self.resultPlot.addCurve(x=x,y=y, legend=legend)
