@@ -312,6 +312,9 @@ class mainWindowUi(qt.QWidget):
         self.startButton = qt.QPushButton("Start")
         lout_3.addWidget(self.startButton)
 
+        self.holdFinalValue = qt.QCheckBox(" hold final value")
+        lout_2.addWidget(self.holdFinalValue)
+
         lout_2.addStretch()
 
         lout_3 = qt.QHBoxLayout()
