@@ -37,17 +37,20 @@ class configWindow(qt.QDialog):
         ######## Configuration parameters
         mainLayout.addStretch()
         mainLayout.addStretch()
-        hline = qt.QFrame()
-        hline.setFrameShape(qt.QFrame.HLine)
-        hline.setStyleSheet("color: rgb(220, 220, 220);")
-        mainLayout.addWidget(hline)
+        self.configGroupBox = qt.QGroupBox()
+        mainLayout.addWidget(self.configGroupBox)
+
+        lout_0 = qt.QVBoxLayout()
+        lout_0.setSpacing(0)
+        self.configGroupBox.setLayout(lout_0)
         labl = qt.QLabel("Configuration parameters")
         labl.setAlignment(qt.Qt.AlignHCenter)
         labl.setFont(qt.QFont("Times", weight=qt.QFont.Bold))
-        mainLayout.addWidget(labl)
+        lout_0.addWidget(labl)
+        lout_0.addSpacing(10)
 
         lout_1 = qt.QHBoxLayout()
-        mainLayout.addLayout(lout_1)
+        lout_0.addLayout(lout_1)
         labl = qt.QLabel("Tango host: ")
         labl.setMinimumWidth(75)
         lout_1.addWidget(labl)
@@ -57,7 +60,7 @@ class configWindow(qt.QDialog):
         lout_1.addWidget(self.tangoHostInput)
 
         lout_1 = qt.QHBoxLayout()
-        mainLayout.addLayout(lout_1)
+        lout_0.addLayout(lout_1)
         labl = qt.QLabel("Device proxy: ")
         labl.setMinimumWidth(75)
         lout_1.addWidget(labl)
@@ -67,7 +70,7 @@ class configWindow(qt.QDialog):
         lout_1.addWidget(self.deviceProxyInput)
 
         lout_1 = qt.QHBoxLayout()
-        mainLayout.addLayout(lout_1)
+        lout_0.addLayout(lout_1)
         labl = qt.QLabel("HTTP host: ")
         labl.setMinimumWidth(75)
         lout_1.addWidget(labl)
@@ -77,7 +80,7 @@ class configWindow(qt.QDialog):
         lout_1.addWidget(self.httpHostInput)
 
         lout_1 = qt.QHBoxLayout()
-        mainLayout.addLayout(lout_1)
+        lout_0.addLayout(lout_1)
         lout_1.setSpacing(1)
         self.applyConfigButton = qt.QPushButton("Apply")
         self.applyConfigButton.setFocusPolicy(qt.Qt.NoFocus)
@@ -92,6 +95,11 @@ class configWindow(qt.QDialog):
         self.resetConfigButton.setFocusPolicy(qt.Qt.NoFocus)
         lout_1.addWidget(self.resetConfigButton)
 
+        if parent.sysNoHardware.isChecked() == True:
+            self.configGroupBox.setEnabled(False)
+            self.httpHostInput.setText("no-hardware mode")
+            self.deviceProxyInput.setText("no-hardware mode")
+            self.tangoHostInput.setText("no-hardware mode")
 
         # ####### end of UI setup
         # ########################################

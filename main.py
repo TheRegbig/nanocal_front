@@ -6,7 +6,7 @@ import os
 
 if __name__ == "__main__":
     app = qt.QApplication(sys.argv)
-    #app.setStyle('Fusion')
+    app.setStyle('Fusion')
     example = mainWindow()
     example.show()
     sys.exit(app.exec())

@@ -1,6 +1,7 @@
 from silx.gui import qt
 from silx.gui.plot import Plot1D, PlotWindow
 from silx.gui import icons
+from resultsDataWidget import resultsDataWidget
 
 class mainWindowUi(qt.QWidget):
     def __init__(self, parent=None):
@@ -41,11 +42,14 @@ class mainWindowUi(qt.QWidget):
         font.setBold(True)
         self.sysOffButton.setFont(font)
         lout_1.addWidget(self.sysOffButton, 1)
-        self.sys_setup_button = qt.QToolButton()
-        self.sys_setup_button.setToolTip("Device settings")
-        self.sys_setup_button.setIcon(icons.getQIcon('item-object'))
-        lout_1.addWidget(self.sys_setup_button, 0)
+        self.sysSetupButton = qt.QToolButton()
+        self.sysSetupButton.setToolTip("Device settings")
+        self.sysSetupButton.setIcon(icons.getQIcon('item-object'))
+        lout_1.addWidget(self.sysSetupButton, 0)
         lout_1.setSpacing(1)
+
+        self.sysNoHardware = qt.QCheckBox(" run without hardware")
+        lout_0.addWidget(self.sysNoHardware)
 
         
         # ####### Experiment Group Box
@@ -232,11 +236,11 @@ class mainWindowUi(qt.QWidget):
         lout_0.addLayout(lout_1, 1)
         
         # Prog group box
-        progGroupBox = qt.QGroupBox("Prog")
-        lout_1.addWidget(progGroupBox, 0)
+        self.progGroupBox = qt.QGroupBox("Prog")
+        lout_1.addWidget(self.progGroupBox, 0)
         lout_2 = qt.QVBoxLayout()
         lout_2.setSpacing(0)
-        progGroupBox.setLayout(lout_2)
+        self.progGroupBox.setLayout(lout_2)
         
         lout_3 = qt.QHBoxLayout()
         lout_3.setSpacing(0)
@@ -394,10 +398,10 @@ class mainWindowUi(qt.QWidget):
         lout_3.addWidget(self.progPlot)
 
         # Values area
-        valuesBox = qt.QGroupBox("Values")
-        lout_0.addWidget(valuesBox, 0)
+        self.valuesBox = qt.QGroupBox("Values")
+        lout_0.addWidget(self.valuesBox, 0)
         lout_1 = qt.QHBoxLayout()
-        valuesBox.setLayout(lout_1)
+        self.valuesBox.setLayout(lout_1)
         
         lout_1.addStretch()
         lout_1.addStretch()
@@ -591,9 +595,9 @@ class mainWindowUi(qt.QWidget):
         # results tab
         lout_0 = qt.QHBoxLayout()
         self.resultTab.setLayout(lout_0)
-        # ########################################################
-        self.resultPlot = Plot1D()
-        lout_0.addWidget(self.resultPlot)
+        self.resultsDataWidget = resultsDataWidget(parent=self)
+        lout_0.addWidget(self.resultsDataWidget)
+
         # ########################################################
 
         
@@ -640,7 +644,7 @@ class mainWindowUi(qt.QWidget):
 
         ####### Set items disabled
         ####################################### 
-        [item.setEnabled(False) for item in [self.experimentBox, self.controlTab]]
+        # [item.setEnabled(False) for item in [self.experimentBox, self.controlTab]]
 
 
 if __name__ == "__main__":

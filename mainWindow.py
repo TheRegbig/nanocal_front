@@ -9,11 +9,11 @@ from calibWindow import *
 from settings import *
 from constants import *
 
-import tango
 import requests
 import pandas as pd
 import json
 import os
+
 
 class mainWindow(mainWindowUi):
     def __init__(self, parent=None):
@@ -25,7 +25,7 @@ class mainWindow(mainWindowUi):
             quit()
 
         if not os.path.exists(self.settings.data_path):
-            error_text = "Incorrect data path specified. It will be set to ./data/"
+            error_text = "Incorrect data path specified.\nIt will be set to ./data/"
             errorWindow(error_text)
             if not os.path.exists('./data/'):
                 os.makedirs('./data/')
@@ -37,15 +37,15 @@ class mainWindow(mainWindowUi):
             self.calibPathInput.setText(os.path.abspath(self.settings.calib_path))
             self.calibPathInput.setCursorPosition(0)
         else:
-            error_text = "Incorrect calibration file specified. It will be set to default calibration"
+            error_text = "Incorrect calibration file specified.\nIt will be set to default calibration."
             errorWindow(error_text)
-            self.calibPathInput.setText('default. select calibration file!')
+            self.calibPathInput.setText('default calibration')
             self.settings.calib_path = 'default calibration'
 
         self.sysOnButton.clicked.connect(self.set_connection)
         self.sysOffButton.clicked.connect(self.disconnect)
         self.sysDataPathButton.clicked.connect(self.select_data_path)
-        self.sys_setup_button.clicked.connect(self.show_help)
+        self.sysSetupButton.clicked.connect(self.show_help)
 
         self.calibPathButton.clicked.connect(self.select_calibration_file)
         self.calibViewButton.clicked.connect(self.view_calibraton_info)
@@ -54,24 +54,37 @@ class mainWindow(mainWindowUi):
         self.startButton.clicked.connect(self.fh_run)
 
     def set_connection(self):
-        try:
-            self.device = tango.DeviceProxy(self.settings.device_proxy)
-            self.device.set_timeout_millis(10000000)
-            self.device.set_connection()
-            [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
-            if self.settings.calib_path == 'default calibration':
-                self.apply_default_calib()
-            else: 
-                self.apply_calib()
-        except:
-            error_text = "No connection to the device! Check settings and logs."
-            errorWindow(error_text)
+        
+        if self.sysNoHardware.isChecked() != True:
+            # AM: cannot install TANGO on MAC OS. so I've added importing tango here
+            # in order to include feature with no-hardware mode 
+            try:
+                import tango
+
+                self.device = tango.DeviceProxy(self.settings.device_proxy)
+                self.device.set_timeout_millis(10000000)
+                self.device.set_connection()
+            
+                if self.settings.calib_path == 'default calibration':
+                    self.apply_default_calib()
+                else: 
+                    self.apply_calib()
+                [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
+            except:
+                ## No-hardware mode for data processing
+                error_text = "No connection to the device or\nTANGO module not found!\nOnly no-hardware mode is possible."
+                errorWindow(error_text)
+                self.run_no_harware()
+        else:
+            self.run_no_harware()
+
 
     
     def disconnect(self):
         if self.device:
            self.device.disconnect()
         [item.setEnabled(False) for item in [self.experimentBox, self.controlTab]]
+        self.sysNoHardware.setEnabled(True)
     
     def select_data_path(self):
         dpath = qt.QFileDialog.getExistingDirectory(self, "Choose folder to save experiment files", \
@@ -86,6 +99,10 @@ class mainWindow(mainWindowUi):
         self.configWindow = configWindow(parent=self)
         self.configWindow.show()
 
+    def run_no_harware(self):
+        self.sysNoHardware.setChecked(True)
+        self.controlTabsWidget.setCurrentIndex(1) 
+        self.mainTabWidget.setCurrentIndex(1) 
     # ===================================
     # Calibration   
 
