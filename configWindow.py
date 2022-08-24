@@ -104,8 +104,8 @@ class configWindow(qt.QDialog):
         # ####### end of UI setup
         # ########################################
         self.applyConfigButton.clicked.connect(self.apply_settings)
-        self.saveConfigButton.clicked.connect(self.save_settings)
-        self.loadConfigButton.clicked.connect(self.load_settings)
+        self.saveConfigButton.clicked.connect(self.save_settings_to_file)
+        self.loadConfigButton.clicked.connect(self.load_settings_from_file)
         self.resetConfigButton.clicked.connect(self.reset_settings)
 
     def apply_settings(self):
@@ -113,14 +113,14 @@ class configWindow(qt.QDialog):
         self.parent().settings.device_proxy = self.deviceProxyInput.text()
         self.parent().settings.http_host = self.httpHostInput.text()
 
-    def load_settings(self):
-        self.parent().load_settings(fpath=True)
+    def load_settings_from_file(self):
+        self.parent().load_settings_from_file(fpath=True)
         self.tangoHostInput.setText(self.parent().settings.tango_host)
         self.deviceProxyInput.setText(self.parent().settings.device_proxy)
         self.httpHostInput.setText(self.parent().settings.http_host)
 
-    def save_settings(self):
-        self.parent().save_settings(fpath=True)
+    def save_settings_to_file(self):
+        self.parent().save_settings_to_file(fpath=True)
     
     def reset_settings(self):
         self.parent().reset_settings()

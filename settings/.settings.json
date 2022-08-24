@@ -10,6 +10,14 @@
         "PATHS": {
             "CALIB_PATH": "./settings/calibration.json",
             "DATA_PATH": "./data/"
+        },
+        "SCAN": {
+            "SAMPLE_RATE": 20000
+        },
+        "MODULATION": {
+            "FREQUENCY": 37.5,
+            "AMPLITUDE": 0.1,
+            "OFFSET": 0.3
         }
     }
 }

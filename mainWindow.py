@@ -21,27 +21,7 @@ class mainWindow(mainWindowUi):
         super(mainWindow, self).__init__(parent)
 
         self.device = None          # patch for disconnect method. to be changed later
-        self.load_settings()
-        if not self.settings: 
-            quit()
-
-        if not os.path.exists(self.settings.data_path):
-            error_text = "Incorrect data path specified.\nIt will be set to ./data/"
-            errorWindow(error_text)
-            if not os.path.exists('./data/'):
-                os.makedirs('./data/')
-            self.settings.data_path = os.path.abspath('./data/')
-        self.sysDataPathInput.setText(os.path.abspath(self.settings.data_path))
-        self.sysDataPathInput.setCursorPosition(0)
-
-        if os.path.exists(self.settings.calib_path):
-            self.calibPathInput.setText(os.path.abspath(self.settings.calib_path))
-            self.calibPathInput.setCursorPosition(0)
-        else:
-            error_text = "Incorrect calibration file specified.\nIt will be set to default calibration."
-            errorWindow(error_text)
-            self.calibPathInput.setText('default calibration')
-            self.settings.calib_path = 'default calibration'
+        self.preload_settings()
 
         self.sysOnButton.clicked.connect(self.set_connection)
         self.sysOffButton.clicked.connect(self.disconnect)
@@ -51,11 +31,21 @@ class mainWindow(mainWindowUi):
         self.calibPathButton.clicked.connect(self.select_calibration_file)
         self.calibViewButton.clicked.connect(self.view_calibraton_info)
         self.calibApplyButton.clicked.connect(self.apply_calib)
+
+        self.applyScanSampleRateButton.clicked.connect(self.apply_sample_rate)
+        self.resetScanSampleRateButton.clicked.connect(self.reset_sample_rate)
+
         self.armButton.clicked.connect(self.fh_arm)
         self.startButton.clicked.connect(self.fh_run)
 
-        self.applyScanSampleRateButton.clicked.connect(self._fh_plot_data)
+# for debugging
+        self.terror0Button.clicked.connect(self.print_debug)
 
+    def print_debug(self):
+        print(self.settings.sample_rate)
+        print(self.calibration.comment)
+# end for debugging
+    
     def set_connection(self):
         
         if self.sysNoHardware.isChecked() != True:
@@ -73,6 +63,9 @@ class mainWindow(mainWindowUi):
                 else: 
                     self.apply_calib()
                 [item.setEnabled(True) for item in [self.experimentBox, self.controlTab]]
+
+                self.device.set_sample_scan_rate(self.settings.sample_rate)
+
             except:
                 ## No-hardware mode for data processing
                 error_text = "No connection to the device or\nTANGO module not found!\nOnly no-hardware mode is possible."
@@ -141,6 +134,50 @@ class mainWindow(mainWindowUi):
         self.calibWindow.show()
     
     # ===================================
+    # Settings
+    def preload_settings(self):
+        self.load_settings_from_file()
+        if not self.settings: 
+            quit()
+
+        if not os.path.exists(self.settings.data_path):
+            error_text = "Incorrect data path specified.\nIt will be set to ./data/"
+            errorWindow(error_text)
+            if not os.path.exists('./data/'):
+                os.makedirs('./data/')
+            self.settings.data_path = os.path.abspath('./data/')
+        self.sysDataPathInput.setText(os.path.abspath(self.settings.data_path))
+        self.sysDataPathInput.setCursorPosition(0)
+
+        if os.path.exists(self.settings.calib_path):
+            self.calibPathInput.setText(os.path.abspath(self.settings.calib_path))
+            self.calibPathInput.setCursorPosition(0)
+        else:
+            error_text = "Incorrect calibration file specified.\nIt will be set to default calibration."
+            errorWindow(error_text)
+            self.calibPathInput.setText('default calibration')
+            self.settings.calib_path = 'default calibration'   
+
+        self.scanSampleRateInput.setText(str(self.settings.sample_rate))
+
+        self.freqInput.setText(str(self.settings.modulation_frequency))
+        self.amplitudeInput.setText(str(self.settings.modulation_amplitude))
+        self.offsetInput.setText(str(self.settings.modulation_offset))  
+
+    def apply_sample_rate(self):
+        self.settings.sample_rate = int(self.scanSampleRateInput.text())
+        self.device.set_sample_scan_rate(self.settings.sample_rate)
+    
+    def reset_sample_rate(self):
+        self.device.reset_sample_scan_rate()
+        self.settings.sample_rate = self.get_sample_rate_from_device()
+        self.scanSampleRateInput.setText(str(self.settings.sample_rate))
+
+    def get_sample_rate_from_device(self):    
+        return self.device.get_sample_rate[1][0]['value']
+
+
+    # ===================================
     # Fast heating
 
     def fh_arm(self):
@@ -205,7 +242,7 @@ class mainWindow(mainWindowUi):
         self._fh_transform_exp_data()
         self._fh_plot_data()
     
-    def save_settings(self, fpath=False):
+    def save_settings_to_file(self, fpath=False):
         # function is used to save settings to default file or to special file if specified
         if not fpath:
             fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
@@ -215,14 +252,14 @@ class mainWindow(mainWindowUi):
             with open(fpath, 'w') as f:
                 json.dump(self.settings.get_dict(), f, separators=(',', ': '), indent=4)
 
-    def load_settings(self, fpath=False):
+    def load_settings_from_file(self, fpath=False):
         # function is used to load default settings or to load special config from file if specified
         if not fpath:
             fpath = os.path.abspath(SETTINGS_FILE_REL_PATH)
         else:
             fpath = qt.QFileDialog.getOpenFileName(self, "Choose file with settings:", None, "*.json")[0]
         try:
-            self.settings = SettingsParser(fpath).get_params()
+            self.settings = Settings(fpath)
             self.disconnect()
         except:
             error_text = "Settings file is missing or corrupted! Settings will be reset to default."
@@ -232,12 +269,12 @@ class mainWindow(mainWindowUi):
     def reset_settings(self):
         # reset config params; used default attributes from Params class
         self.settings = mainParams()
-        self.save_settings()
+        self.save_settings_to_file()
         self.disconnect()
 
     def closeEvent(self, event):
         # dumping current settings to ./settings/.settings.json and closing all the windows
-        self.save_settings()
+        self.save_settings_to_file()
         for window in qt.QApplication.topLevelWidgets():
             window.close()
 

@@ -28,15 +28,18 @@ PATHS_FIELD = "PATHS"
 CALIB_PATH_FIELD = "CALIB_PATH"
 DATA_PATH_FIELD = "DATA_PATH"
 
+SCAN_FIELD = "SCAN"
+SAMPLE_RATE_FIELD = "SAMPLE_RATE"
+
+MODULATION_FIELD = "MODULATION"
+FREQUENCY_FIELD = "FREQUENCY"
+AMPLITUDE_FIELD = "AMPLITUDE"
+OFFSET_FIELD = "OFFSET"
+
 # Calibration constants
 # =================================================================================
 
 INFO_FIELD = "Info"
-
-MODULATION_PARAMS_FIELD = "Modulation params"
-AMPLITUDE_FIELD = "Amplitude"
-OFFSET_FIELD = "Offset"
-FREQUENCY_FIELD = "Frequency"
 
 CALIBRATION_COEFFS_FIELD = "Calibration coeff"
 U_TPL_FIELD = "Utpl"
