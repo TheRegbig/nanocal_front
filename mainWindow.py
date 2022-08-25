@@ -1,6 +1,5 @@
 from silx.gui import qt
 from silx.gui.plot import Plot1D
-import numpy as np
 
 from mainWindowUi import mainWindowUi
 from errorWindow import *
@@ -10,7 +9,8 @@ from settings import *
 from constants import *
 
 import requests
-import pandas as pd
+import pandas
+import numpy
 import json
 import os
 import h5py
@@ -183,13 +183,13 @@ class mainWindow(mainWindowUi):
     def fh_arm(self):
         xOption = 1000 if self.experimentTimeComboBox.currentIndex()==1 else 1    #0 - time in ms, 1 - time in s
         yOption = self.experimentTempComboBox.currentIndex() #index 0 - temp in C, 1 - volt in V
-        uncorrectedProfile = np.array([[],[]], dtype=float)
+        uncorrectedProfile = numpy.array([[],[]], dtype=float)
         for i in range(self.experimentTable.rowCount()):
-            uncorrectedProfile = np.hstack((uncorrectedProfile,
+            uncorrectedProfile = numpy.hstack((uncorrectedProfile,
                                             [[float(self.experimentTable.item(i, 0).text())],
                                             [float(self.experimentTable.item(i, 1).text())]]))
-        correctedProfile = uncorrectedProfile[:, :(np.argmax(uncorrectedProfile[0])+1)]
-        correctedProfile = np.insert(correctedProfile, 0, 0, axis=1)
+        correctedProfile = uncorrectedProfile[:, :(numpy.argmax(uncorrectedProfile[0])+1)]
+        correctedProfile = numpy.insert(correctedProfile, 0, 0, axis=1)
         self.time_table = xOption*correctedProfile[0] # changing s to ms if needed
         self.temp_table = correctedProfile[1]
         
@@ -221,7 +221,7 @@ class mainWindow(mainWindowUi):
             f.write(response.content)
 
     def _fh_transform_exp_data(self):
-        self.exp_data = pd.DataFrame({})
+        self.exp_data = pandas.DataFrame({})
         with h5py.File('./data/exp_data.h5', 'r') as f:
             data = f['data']
             for key in list(data.keys()):
