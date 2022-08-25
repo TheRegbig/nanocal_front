@@ -3,10 +3,12 @@ from silx.gui import qt
 from mainWindow import mainWindow
 import os
 
-
-if __name__ == "__main__":
-    app = qt.QApplication(sys.argv)
+def create_GUI():
+    app = qt.QApplication([])
     app.setStyle('Fusion')
     example = mainWindow()
     example.show()
-    sys.exit(app.exec())
+    app.exec()
+
+if __name__ == "__main__":
+    create_GUI()
