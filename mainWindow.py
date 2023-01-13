@@ -9,8 +9,8 @@ from settings import *
 from constants import *
 
 import requests
-import pandas
-import numpy
+import pandas as pd
+import numpy as np
 import json
 import os
 import h5py
@@ -37,6 +37,9 @@ class mainWindow(mainWindowUi):
 
         self.armButton.clicked.connect(self.fh_arm)
         self.startButton.clicked.connect(self.fh_run)
+
+        self.setTempVoltButton.clicked.connect(self.set_temp_volt)
+        self.unsetTempVoltButton.clicked.connect(self.unset_temp_volt)
 
 # for debugging
         self.terror0Button.clicked.connect(self.print_debug)
@@ -183,13 +186,13 @@ class mainWindow(mainWindowUi):
     def fh_arm(self):
         xOption = 1000 if self.experimentTimeComboBox.currentIndex()==1 else 1    #0 - time in ms, 1 - time in s
         yOption = self.experimentTempComboBox.currentIndex() #index 0 - temp in C, 1 - volt in V
-        uncorrectedProfile = numpy.array([[],[]], dtype=float)
+        uncorrectedProfile = np.array([[],[]], dtype=float)
         for i in range(self.experimentTable.rowCount()):
-            uncorrectedProfile = numpy.hstack((uncorrectedProfile,
+            uncorrectedProfile = np.hstack((uncorrectedProfile,
                                             [[float(self.experimentTable.item(i, 0).text())],
                                             [float(self.experimentTable.item(i, 1).text())]]))
-        correctedProfile = uncorrectedProfile[:, :(numpy.argmax(uncorrectedProfile[0])+1)]
-        correctedProfile = numpy.insert(correctedProfile, 0, 0, axis=1)
+        correctedProfile = uncorrectedProfile[:, :(np.argmax(uncorrectedProfile[0])+1)]
+        correctedProfile = np.insert(correctedProfile, 0, 0, axis=1)
         self.time_table = xOption*correctedProfile[0] # changing s to ms if needed
         self.temp_table = correctedProfile[1]
         
@@ -202,11 +205,18 @@ class mainWindow(mainWindowUi):
         self.progPlot.addCurve(x=self.time_table, y=self.temp_table)
         self.progPlot.getXAxis().setLabel(x_label)
         self.progPlot.getYAxis().setLabel(y_label)
-        # time = list(map(float, self.time_input.text().split(',')))
-        # temp = list(map(float, self.temp_input.text().split(',')))
-        self.device.set_fh_time_profile(self.time_table)
-        self.device.set_fh_temp_profile(self.temp_table) 
-        self.device.arm_fast_heat()
+
+        # generating time_temp_volt_tables as dict, converting it to str
+        # to pass to run_fast_heat (tango)
+        self.time_temp_volt_tables = {'ch0':{}, 'ch1':{}, 'ch2':{}}
+        self.time_temp_volt_tables['ch0']['time'] = self.time_table.tolist()
+        self.time_temp_volt_tables['ch0']['volt'] = [0.1]*len(self.time_table) # 0.1V on 0 channel
+        self.time_temp_volt_tables['ch2']['time'] = self.time_table.tolist()
+        self.time_temp_volt_tables['ch2']['volt'] = [5.0]*len(self.time_table) # 5V on 2 channel - trigger
+        self.time_temp_volt_tables['ch1']['time'] = self.time_table.tolist()
+        self.time_temp_volt_tables['ch1']['temp'] = self.temp_table.tolist()
+        self.time_temp_volt_tables_str = json.dumps(self.time_temp_volt_tables)
+        self.device.arm_fast_heat(self.time_temp_volt_tables_str)
 
     def _fh_download_raw_data(self):
         URL = self.settings.http_host+"data/raw_data/raw_data.h5"
@@ -221,7 +231,7 @@ class mainWindow(mainWindowUi):
             f.write(response.content)
 
     def _fh_transform_exp_data(self):
-        self.exp_data = pandas.DataFrame({})
+        self.exp_data = pd.DataFrame({})
         with h5py.File('./data/exp_data.h5', 'r') as f:
             data = f['data']
             for key in list(data.keys()):
@@ -233,7 +243,6 @@ class mainWindow(mainWindowUi):
                                             self.exp_data[key], 
                                             key)
 
-
     def fh_run(self):
         self.mainTabWidget.setCurrentIndex(1) 
         self.device.run_fast_heat()
@@ -241,7 +250,33 @@ class mainWindow(mainWindowUi):
         self._fh_download_exp_data()
         self._fh_transform_exp_data()
         self._fh_plot_data()
+
+    # ===================================
+    # Iso (set) mode
+    def set_temp_volt(self):
+        value = float(self.setInput.text())
+        print(value)
+        key = str(self.setComboBox.currentText())
+        if key=="Temperature":
+            key="temp"
+        if key=="Voltage":
+            key="volt"
+        print(key)
+        chan_temp_volt = {"ch2": {key:value} }
+        
+        self.chan_temp_volt_str = json.dumps(chan_temp_volt)
+        self.device.arm_iso_mode(self.chan_temp_volt_str)
+        self.device.run_iso_mode()
     
+    def unset_temp_volt(self):
+        chan_temp_volt = {"ch1": {"volt":0} }
+        self.chan_temp_volt_str = json.dumps(chan_temp_volt)
+        self.device.arm_iso_mode(self.chan_temp_volt_str)
+        self.device.run_iso_mode()
+
+
+
+    # ===================================
     def save_settings_to_file(self, fpath=False):
         # function is used to save settings to default file or to special file if specified
         if not fpath:
