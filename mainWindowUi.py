@@ -2,6 +2,7 @@ from silx.gui import qt
 from silx.gui.plot import Plot1D, PlotWindow
 from silx.gui import icons
 from resultsDataWidget import resultsDataWidget
+from procFastHeatWidget import procFastHeatWidget
 
 class mainWindowUi(qt.QWidget):
     def __init__(self, parent=None):
@@ -229,6 +230,12 @@ class mainWindowUi(qt.QWidget):
         self.mainTabWidget.addTab(self.controlTab, "Control")
         self.resultTab = qt.QWidget()
         self.mainTabWidget.addTab(self.resultTab, "Result")
+        self.addNewTab = qt.QWidget()
+        self.mainTabWidget.addTab(self.addNewTab, "+")
+        self.mainTabWidget.setTabsClosable(True)
+        self.mainTabWidget.tabBar().setTabButton(0, qt.QTabBar.RightSide, None)
+        self.mainTabWidget.tabBar().setTabButton(1, qt.QTabBar.RightSide, None)
+        self.mainTabWidget.tabBar().setTabButton(2, qt.QTabBar.RightSide, None)
         rightLayout.addWidget(self.mainTabWidget)
         
         # Control tab
@@ -356,27 +363,16 @@ class mainWindowUi(qt.QWidget):
         lout_1.addWidget(self.controlTabsWidget, 1)
         lout_2 = qt.QVBoxLayout()
         self.signalsTab.setLayout(lout_2)
-        self.signalsPlot = PlotWindow(fit=False, mask=False, roi=False, colormap=False,
-                                    curveStyle=False, yInverted=False, logScale=False,
-                                    aspectRatio=False)
-        self.signalsPlot.setAxesMargins(left=0.005, top=0.005, right=0.005, bottom=0.005)
-        self.signalsPlot.setDataMargins(xMinMargin=0.05, xMaxMargin=0.05, yMinMargin=0.05, yMaxMargin=0.05)
-        self.signalsPlot.getYAxis().setLabel('')
-        self.signalsPlot.getXAxis().setLabel('')
-        self.signalsPlot.setGraphGrid('major')
-        self.signalsPlot.addCurve([0,1], [0,1], linestyle='') # just for better view at start
+        self.signalsPlot = resultsDataWidget()
+        self.signalsPlot.resultPlot.setAxesMargins(left=0.005, top=0.005, right=0.005, bottom=0.005)
+        self.signalsPlot.resultPlot.getYAxis().setLabel('')
+        self.signalsPlot.resultPlot.getXAxis().setLabel('')
         lout_2.addWidget(self.signalsPlot)
         lout_3 = qt.QVBoxLayout()
         self.progTab.setLayout(lout_3)
-        self.progPlot = PlotWindow(fit=False, mask=False, roi=False, colormap=False,
-                                    curveStyle=False, yInverted=False, logScale=False,
-                                    aspectRatio=False)
-        self.progPlot.setAxesMargins(left=0.1, top=0.05, right=0.05, bottom=0.1)
-        self.progPlot.setDataMargins(xMinMargin=0.05, xMaxMargin=0.05, yMinMargin=0.05, yMaxMargin=0.05)
-        self.progPlot.getXAxis().setLabel(self.experimentTimeComboBox.currentText())
-        self.progPlot.getYAxis().setLabel(self.experimentTempComboBox.currentText())
-        self.progPlot.setGraphGrid('major')
-        self.progPlot.addCurve([0,1], [0,1], linestyle='')
+        self.progPlot = resultsDataWidget()
+        self.progPlot.resultPlot.getXAxis().setLabel(self.experimentTimeComboBox.currentText())
+        self.progPlot.resultPlot.getYAxis().setLabel(self.experimentTempComboBox.currentText())
         lout_3.addWidget(self.progPlot)
 
         # Values area
@@ -578,6 +574,8 @@ class mainWindowUi(qt.QWidget):
         lout_0 = qt.QHBoxLayout()
         self.resultTab.setLayout(lout_0)
         self.resultsDataWidget = resultsDataWidget(parent=self)
+        self.resultsDataWidget.resultPlot.getXAxis().setLabel('Time (ms)')
+        self.resultsDataWidget.resultPlot.getYAxis().setLabel('Temp (°C)')
         lout_0.addWidget(self.resultsDataWidget)
 
         # ########################################################
@@ -629,6 +627,11 @@ class mainWindowUi(qt.QWidget):
         # [item.setEnabled(False) for item in [self.experimentBox, self.controlTab]]
 
         self.setComboBox.currentTextChanged.connect(self.setComboBox_changed)
+        
+        ####### Add/delete tabs on mainTabWidget
+        #######################################         
+        self.mainTabWidget.currentChanged.connect(self.add_tab_to_mainTabWidget)
+        self.mainTabWidget.tabCloseRequested.connect(self.close_tab_in_mainTabWidget)
 
     def setComboBox_changed(self):
         text = self.setComboBox.currentText()
@@ -636,6 +639,30 @@ class mainWindowUi(qt.QWidget):
             self.setInputUnits.setText("°C")
         if text == "Volt":
             self.setInputUnits.setText("V")
+    
+    def add_tab_to_mainTabWidget(self, i):
+        if self.mainTabWidget.tabText(i) == "+":
+            tab_types = ("Process fast heating", 
+                        "Process slow heating", 
+                        "Process with custom workflow")
+            tab_type, ok = qt.QInputDialog.getItem(self, "Choose type:", 
+                "New tab", tab_types, 0, False)
+            if ok and tab_type:
+                self.newTab = qt.QWidget()
+                self.newTab.layout = qt.QVBoxLayout()
+                self.mainTabWidget.insertTab(i, self.newTab, tab_type)   
+                self.mainTabWidget.setCurrentIndex(i)
+
+                if tab_type=="Process fast heating":
+                    self.newTabWidget = procFastHeatWidget(self)
+                    self.newTab.layout.addWidget(self.newTabWidget)
+
+                self.newTab.setLayout(self.newTab.layout)
+
+    def close_tab_in_mainTabWidget(self, i):
+        self.mainTabWidget.setCurrentIndex(i-1)
+        self.mainTabWidget.removeTab(i)
+        
 
 if __name__ == "__main__":
     import sys

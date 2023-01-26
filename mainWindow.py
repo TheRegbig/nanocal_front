@@ -198,13 +198,15 @@ class mainWindow(mainWindowUi):
         
         self.progressBar.setValue(0)  
         self.controlTabsWidget.setCurrentIndex(1) 
-        self.progPlot.clear()
+        self.progPlot.resultPlot.clear()
         
         y_label = self.experimentTempComboBox.currentText()
         x_label = self.experimentTimeComboBox.currentText()
-        self.progPlot.addCurve(x=self.time_table, y=self.temp_table)
-        self.progPlot.getXAxis().setLabel(x_label)
-        self.progPlot.getYAxis().setLabel(y_label)
+        self.progPlot.resultPlot.addCurve(x=self.time_table, y=self.temp_table, 
+                                            legend="temperature", 
+                                            color=self.progPlot.curveColors['red'])
+        self.progPlot.resultPlot.getXAxis().setLabel(x_label)
+        self.progPlot.resultPlot.getYAxis().setLabel(y_label)
 
         # generating time_temp_volt_tables as dict, converting it to str
         # to pass to run_fast_heat (tango)
@@ -238,10 +240,19 @@ class mainWindow(mainWindowUi):
                 self.exp_data[key] = data[key][:]
 
     def _fh_plot_data(self):
-        for key in list(self.exp_data.keys()):
-            self.resultsDataWidget.addCurve(list(range(len(self.exp_data[key]))), 
+        _keys = list(self.exp_data.keys())
+        _keys.remove('time')
+        for idx, key in enumerate(_keys):
+            color = self.resultsDataWidget.curveColors[list(self.resultsDataWidget.curveColors.keys())[idx]]
+            self.resultsDataWidget.resultPlot.addCurve(self.exp_data['time'], 
                                             self.exp_data[key], 
-                                            key)
+                                            legend = key,
+                                            color=color)
+        for curve in self.resultsDataWidget.resultPlot.getItems():
+            if curve.getName()!="temp":
+                curve.setVisible(False)
+        self.resultsDataWidget.resultPlot.resetZoom()
+        
 
     def fh_run(self):
         self.mainTabWidget.setCurrentIndex(1) 
