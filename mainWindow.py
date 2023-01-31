@@ -229,8 +229,12 @@ class mainWindow(mainWindowUi):
     def _fh_download_exp_data(self):
         URL = self.settings.http_host+"data/exp_data.h5"
         response = requests.get(URL, verify=False)
-        with open('./data/exp_data.h5', 'wb') as f:
-            f.write(response.content)
+        fname = qt.QFileDialog.getSaveFileName(self, "Save data to file", 
+                                                self.settings.data_path, 
+                                                "*.h5")[0]
+        if fname:
+            with open(fname, 'wb') as f:
+                f.write(response.content)
 
     def _fh_transform_exp_data(self):
         self.exp_data = pd.DataFrame({})

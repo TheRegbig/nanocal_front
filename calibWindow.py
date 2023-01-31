@@ -243,11 +243,13 @@ class calibWindow(qt.QDialog):
         lout_0.addWidget(qt.QLabel(u"R<sub>inner</sub>, \u03A9 = "))
         self.rhtrBoxInput1 = qt.QLineEdit()
         self.rhtrBoxInput1.setMaximumWidth(short_line_input_width)
+        self.rhtrBoxInput1.setFrame(False)
         lout_0.addWidget(self.rhtrBoxInput1)
         lout_0.addSpacing(20)
         lout_0.addWidget(qt.QLabel(u"R<sub>guard</sub>, \u03A9 = "))
         self.rhtrBoxInput2 = qt.QLineEdit()
         self.rhtrBoxInput2.setMaximumWidth(short_line_input_width)
+        self.rhtrBoxInput2.setFrame(False)
         lout_0.addWidget(self.rhtrBoxInput2)
         lout_0.addStretch()
 

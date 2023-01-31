@@ -90,12 +90,12 @@ class procFastHeatWidget(qt.QWidget):
         right_lout.addWidget(self.procFastHeatGraph, 1)
         
         ## Calibration space
+        
         self.calibrationGroupBox = qt.QGroupBox("Calibration coefficients")
         right_lout.addWidget(self.calibrationGroupBox)
         lout_1 = qt.QHBoxLayout()
         self.calibrationGroupBox.setLayout(lout_1)
         lout_1.setSpacing(1)
-        lout_0.addLayout(lout_1)
         lout_1.addWidget(qt.QLabel("R<sub>h</sub>(T) = "))
         self.rcoeff1Input = qt.QLineEdit()
         self.rcoeff1Input.setFixedWidth(short_line_input_width)
@@ -375,14 +375,12 @@ class procFastHeatWidget(qt.QWidget):
         if exp_paths:
             calibration_ds = open(exp_paths[0]+"::/calibration")
             self.calibration = json.loads(calibration_ds[()].decode())
-            self.rcoeff1Input.setText(str(self.calibration['thtrd0']))
-            self.rcoeff2Input.setText(str(self.calibration['thtrd1']))
-            self.rcoeff3Input.setText(str(self.calibration['thtrd2']))
+            self.rcoeff1Input.setText(str(self.calibration['thtr0']))
+            self.rcoeff2Input.setText(str(self.calibration['thtr1']))
+            self.rcoeff3Input.setText(str(self.calibration['thtr2']))
             rgRhRatio = round(self.calibration['rghtr']/self.calibration['rhtr'], 3)
             self.rgRhRatioInput.setText(str(rgRhRatio))
             calibration_ds.close()
-        else:
-            pass
 
         
 
