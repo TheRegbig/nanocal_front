@@ -1,6 +1,6 @@
 from silx.gui import qt
 from settings import *
-from errorWindow import *
+from messageWindows import *
 from constants import SETTINGS_FILE_REL_PATH
 import requests
 

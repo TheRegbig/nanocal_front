@@ -2,7 +2,7 @@ from silx.gui import qt
 from silx.gui.plot import Plot1D
 
 from mainWindowUi import mainWindowUi
-from errorWindow import *
+from messageWindows import *
 from configWindow import *
 from calibWindow import *
 from settings import *
@@ -72,7 +72,7 @@ class mainWindow(mainWindowUi):
             except:
                 ## No-hardware mode for data processing
                 error_text = "No connection to the device or\nTANGO module not found!\nOnly no-hardware mode is possible."
-                errorWindow(error_text)
+                ErrorWindow(error_text)
                 self.run_no_harware()
         else:
             self.run_no_harware()
@@ -145,7 +145,7 @@ class mainWindow(mainWindowUi):
 
         if not os.path.exists(self.settings.data_path):
             error_text = "Incorrect data path specified.\nIt will be set to ./data/"
-            errorWindow(error_text)
+            ErrorWindow(error_text)
             if not os.path.exists('./data/'):
                 os.makedirs('./data/')
             self.settings.data_path = os.path.abspath('./data/')
@@ -157,7 +157,7 @@ class mainWindow(mainWindowUi):
             self.calibPathInput.setCursorPosition(0)
         else:
             error_text = "Incorrect calibration file specified.\nIt will be set to default calibration."
-            errorWindow(error_text)
+            ErrorWindow(error_text)
             self.calibPathInput.setText('default calibration')
             self.settings.calib_path = 'default calibration'   
 
@@ -215,6 +215,8 @@ class mainWindow(mainWindowUi):
         self.time_temp_volt_tables['ch0']['volt'] = [0.1]*len(self.time_table) # 0.1V on 0 channel
         self.time_temp_volt_tables['ch2']['time'] = self.time_table.tolist()
         self.time_temp_volt_tables['ch2']['volt'] = [5.0]*len(self.time_table) # 5V on 2 channel - trigger
+        # TODO: change trigger signal to drop down after program is finidhed
+        self.time_temp_volt_tables['ch2']['volt'][-1] = 0
         self.time_temp_volt_tables['ch1']['time'] = self.time_table.tolist()
         self.time_temp_volt_tables['ch1']['temp'] = self.temp_table.tolist()
         self.time_temp_volt_tables_str = json.dumps(self.time_temp_volt_tables)
@@ -230,36 +232,40 @@ class mainWindow(mainWindowUi):
         URL = self.settings.http_host+"data/exp_data.h5"
         response = requests.get(URL, verify=False)
         fname = qt.QFileDialog.getSaveFileName(self, "Save data to file", 
-                                                self.settings.data_path, 
+                                                self.settings.data_path+'exp_data.h5', 
                                                 "*.h5")[0]
         if fname:
             with open(fname, 'wb') as f:
                 f.write(response.content)
+        self.currentExpFilePath = fname
 
     def _fh_transform_exp_data(self):
         self.exp_data = pd.DataFrame({})
-        with h5py.File('./data/exp_data.h5', 'r') as f:
-            data = f['data']
-            for key in list(data.keys()):
-                self.exp_data[key] = data[key][:]
+        if self.currentExpFilePath:
+            with h5py.File(self.currentExpFilePath, 'r') as f:
+                data = f['data']
+                for key in list(data.keys()):
+                    self.exp_data[key] = data[key][:]
 
     def _fh_plot_data(self):
-        _keys = list(self.exp_data.keys())
-        _keys.remove('time')
-        for idx, key in enumerate(_keys):
-            color = self.resultsDataWidget.curveColors[list(self.resultsDataWidget.curveColors.keys())[idx]]
-            self.resultsDataWidget.resultPlot.addCurve(self.exp_data['time'], 
-                                            self.exp_data[key], 
-                                            legend = key,
-                                            color=color)
-        for curve in self.resultsDataWidget.resultPlot.getItems():
-            if curve.getName()!="temp":
-                curve.setVisible(False)
+        self.resultsDataWidget.clear()
+        if not self.exp_data.empty:
+            _keys = list(self.exp_data.keys())
+            _keys.remove('time')
+            for idx, key in enumerate(_keys):
+                color = self.resultsDataWidget.curveColors[list(self.resultsDataWidget.curveColors.keys())[idx]]
+                self.resultsDataWidget.addCurve(self.exp_data['time'], 
+                                                self.exp_data[key], 
+                                                legend = key,
+                                                color=color)
+            for curve in self.resultsDataWidget.resultPlot.getItems():
+                if curve.getName()!="temp":
+                    curve.setVisible(False)
+            self.mainTabWidget.setCurrentIndex(1) 
         self.resultsDataWidget.resultPlot.resetZoom()
         
 
     def fh_run(self):
-        self.mainTabWidget.setCurrentIndex(1) 
         self.device.run_fast_heat()
         self._fh_download_raw_data()
         self._fh_download_exp_data()
@@ -313,7 +319,7 @@ class mainWindow(mainWindowUi):
             self.disconnect()
         except:
             error_text = "Settings file is missing or corrupted! Settings will be reset to default."
-            errorWindow(error_text)
+            ErrorWindow(error_text)
             self.settings = mainParams()
 
     def reset_settings(self):

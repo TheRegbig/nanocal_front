@@ -5,6 +5,7 @@ import os
 
 def create_GUI():
     app = qt.QApplication([])
+    sys.excepthook = qt.exceptionHandler
     app.setStyle('Fusion')
     example = mainWindow()
     example.show()

@@ -84,7 +84,7 @@ class mainWindowUi(qt.QWidget):
         self.sysDataPathButton.setToolTip("Browse data path")
         self.sysDataPathButton.setIcon(icons.getQIcon('document-open'))
         lout_2.addWidget(self.sysDataPathButton)
-
+        
         lout_1 = qt.QVBoxLayout()
         lout_0.addLayout(lout_1)
         lout_1.setSpacing(3)
