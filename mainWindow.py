@@ -211,16 +211,22 @@ class mainWindow(mainWindowUi):
         # generating time_temp_volt_tables as dict, converting it to str
         # to pass to run_fast_heat (tango)
         self.time_temp_volt_tables = {'ch0':{}, 'ch1':{}, 'ch2':{}}
+
+        # 0.1V on 0 channel
         self.time_temp_volt_tables['ch0']['time'] = self.time_table.tolist()
-        self.time_temp_volt_tables['ch0']['volt'] = [0.1]*len(self.time_table) # 0.1V on 0 channel
-        self.time_temp_volt_tables['ch2']['time'] = self.time_table.tolist()
-        self.time_temp_volt_tables['ch2']['volt'] = [5.0]*len(self.time_table) # 5V on 2 channel - trigger
-        # TODO: change trigger signal to drop down after program is finidhed
-        self.time_temp_volt_tables['ch2']['volt'][-1] = 0
+        self.time_temp_volt_tables['ch0']['volt'] = [0.1]*len(self.time_table) 
+
+        # signal to heater - channel 1
         self.time_temp_volt_tables['ch1']['time'] = self.time_table.tolist()
         self.time_temp_volt_tables['ch1']['temp'] = self.temp_table.tolist()
         self.time_temp_volt_tables_str = json.dumps(self.time_temp_volt_tables)
         self.device.arm_fast_heat(self.time_temp_volt_tables_str)
+
+        # 2.5V trigger signal like gate form
+        self.time_temp_volt_tables['ch2']['time'] =  self.time_table.tolist()
+        self.time_temp_volt_tables['ch2']['time'].insert(-1, self.time_temp_volt_tables['ch2']['time'][-1]-1)
+        self.time_temp_volt_tables['ch2']['volt'] = [2.5]*(len(self.time_table)+1)
+        self.time_temp_volt_tables['ch2']['volt'][-1] = 0
 
     def _fh_download_raw_data(self):
         URL = self.settings.http_host+"data/raw_data/raw_data.h5"

@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from silx.gui import qt
 from silx.io import open
 from silx.math.fit import filters
@@ -483,12 +482,11 @@ class procFastHeatWidget(qt.QWidget):
 
         isoBeginIdx = np.abs(self.empty_data['time'] - int(self.isoBeginInput.value())).argmin() 
         isoEndIdx = np.abs(self.empty_data['time'] - int(self.isoEndInput.value())).argmin()
-        print(isoBeginIdx, isoEndIdx)
-        empty_P, empty_G, empty_G_temp, empty_GdT = self.calculate_heat_exch_coeff(
-                                                    calib_coeff_1, calib_coeff_2, calib_coeff_3,
-                                                    self.empty_data['Uref'], self.empty_data['Thtr'], 
-                                                    self.empty_data['temp'], self.empty_data['rate'], 
-                                                    isoBeginIdx, isoEndIdx)
+        _, empty_G, empty_G_temp, _ = self.calculate_heat_exch_coeff(
+                                        calib_coeff_1, calib_coeff_2, calib_coeff_3,
+                                        self.empty_data['Uref'], self.empty_data['Thtr'], 
+                                        self.empty_data['temp'], self.empty_data['rate'], 
+                                        isoBeginIdx, isoEndIdx)
         dT = self.exp_data['temp']-self.empty_data['temp']
         
         self.exp_data['exp_P'] = self.calculate_P(dT, empty_G, empty_G_temp, self.empty_data['temp'])
