@@ -23,7 +23,7 @@ class mainWindow(mainWindowUi):
         self.device = None          # patch for disconnect method. to be changed later
         self.preload_settings()
 
-        self.sysOnButton.clicked.connect(self.set_connection)
+        self.sysOnButton.clicked.connect(self.sysOnButtonPressed)
         self.sysOffButton.clicked.connect(self.disconnect)
         self.sysDataPathButton.clicked.connect(self.select_data_path)
         self.sysSetupButton.clicked.connect(self.show_help)
@@ -49,6 +49,10 @@ class mainWindow(mainWindowUi):
         print(self.calibration.comment)
 # end for debugging
     
+    def sysOnButtonPressed(self):
+        self.set_connection()
+        # TODO: add continious aquisition after modulation starts to check signals
+
     def set_connection(self):
         
         if self.sysNoHardware.isChecked() != True:
@@ -219,14 +223,15 @@ class mainWindow(mainWindowUi):
         # signal to heater - channel 1
         self.time_temp_volt_tables['ch1']['time'] = self.time_table.tolist()
         self.time_temp_volt_tables['ch1']['temp'] = self.temp_table.tolist()
-        self.time_temp_volt_tables_str = json.dumps(self.time_temp_volt_tables)
-        self.device.arm_fast_heat(self.time_temp_volt_tables_str)
 
         # 2.5V trigger signal like gate form
         self.time_temp_volt_tables['ch2']['time'] =  self.time_table.tolist()
         self.time_temp_volt_tables['ch2']['time'].insert(-1, self.time_temp_volt_tables['ch2']['time'][-1]-1)
         self.time_temp_volt_tables['ch2']['volt'] = [2.5]*(len(self.time_table)+1)
         self.time_temp_volt_tables['ch2']['volt'][-1] = 0
+
+        self.time_temp_volt_tables_str = json.dumps(self.time_temp_volt_tables)
+        self.device.arm_fast_heat(self.time_temp_volt_tables_str)
 
     def _fh_download_raw_data(self):
         URL = self.settings.http_host+"data/raw_data/raw_data.h5"
